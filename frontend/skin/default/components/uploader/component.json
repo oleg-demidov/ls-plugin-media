@@ -1,0 +1,13 @@
+{
+    "name": "uploader",
+    "version": "1.0.0",
+    "dependencies": {
+        
+    },
+    "templates": {
+        "uploader":"uploader.tpl"
+    },
+    "scripts": {
+        "uploader": "js/uploader.js"
+    }
+}
