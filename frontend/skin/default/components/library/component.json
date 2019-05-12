@@ -1,20 +1,13 @@
 {
-    "name": "media",
+    "name": "library",
     "version": "1.0.0",
     "dependencies": {
         
     },
     "templates": {
-        "media": "media.tpl",
-        "modal": "media.modal.tpl"
-        
+        "library": "library.tpl"        
     },
     "scripts": {
-        "media": "js/media.js",
-        "uploader": "js/uploader.js",
         "library": "js/library.js"
-    },
-    "styles": {
-        "media": "css/media.css"
     }
 }

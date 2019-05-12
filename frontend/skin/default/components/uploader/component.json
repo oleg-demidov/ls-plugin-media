@@ -8,6 +8,10 @@
         "uploader":"uploader.tpl"
     },
     "scripts": {
-        "uploader": "js/uploader.js"
+        "uploader": "js/uploader.js",
+        "fileuploader":"js/jquery.fileupload.js"
+    },
+    "styles":{
+        "uploader":"css/uploader.css"
     }
 }

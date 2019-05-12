@@ -21,10 +21,11 @@ class PluginMedia extends Plugin
 //        $this->Lang_AddLangJs([
 //            'plugin.wiki.markitup.punkt'
 //        ]);
-//        
-        //$this->Component_Add('like:like');
+////        
+//        $this->Component_Add('media:media');
+//        $this->Component_Add('media:uploader');
 
-       // $this->Viewer_AppendScript(Plugin::GetTemplatePath('like'). '/assets/js/init.js');
+//        $this->Viewer_AppendScript(Plugin::GetTemplatePath('media'). '/assets/js/init.js');
     }
 
     public function Activate()

@@ -11,8 +11,11 @@ class PluginMedia_ActionAdmin_EventMedia extends Event
 
     
     public function EventLibrary() {
+        
         $this->SetTemplateAction('library');
         
+        $this->Component_Add('media:media');
+        $this->Component_Add('bootstrap');
     }
     
     

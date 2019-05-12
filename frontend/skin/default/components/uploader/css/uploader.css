@@ -1,11 +1,12 @@
-/**
- * Media
- */
+/* 
+    Created on : 09.05.2019, 23:25:13
+    Author     : oleg
+*/
 
 /**
  * Upload area
  */
-.bs-field-upload-area {
+.media-upload-area {
     position: relative;
     overflow: hidden;
     cursor: pointer;
@@ -13,20 +14,11 @@
     border: 3px dashed #eee;
     color: #555;
     padding: 20px;
+    margin-bottom: 20px;
     text-align: center;
 }
-.bs-field-upload-area input[type=file] {
+.media-upload-area input[type=file] {
     position: absolute;
     top: -999px;
     left: -999px;
-}
-.bs-media-file{
-    max-width: 8em;
-}
-.bs-media-file h5{
-    font-size: 1rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 5rem;
-    white-space: nowrap;
 }

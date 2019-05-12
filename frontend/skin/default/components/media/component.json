@@ -2,7 +2,7 @@
     "name": "media",
     "version": "1.0.0",
     "dependencies": {
-        
+        "media:uploader":"*"
     },
     "templates": {
         "media": "media.tpl",
@@ -10,11 +10,8 @@
         
     },
     "scripts": {
-        "media": "js/media.js",
-        "uploader": "js/uploader.js",
-        "library": "js/library.js"
+        
     },
     "styles": {
-        "media": "css/media.css"
     }
 }

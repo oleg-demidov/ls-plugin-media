@@ -1,34 +1,14 @@
 <?php
-/*
- * LiveStreet CMS
- * Copyright © 2013 OOO "ЛС-СОФТ"
- *
- * ------------------------------------------------------
- *
- * Official site: www.livestreetcms.com
- * Contact e-mail: office@livestreetcms.com
- *
- * GNU General Public License, version 2:
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
- *
- * ------------------------------------------------------
- *
- * @link http://www.livestreetcms.com
- * @copyright 2013 OOO "ЛС-СОФТ"
- * @author Maxim Mzhelskiy <rus.engine@gmail.com>
- *
- */
 
-/**
- * Сущность медиа данных (изображение, видео и т.п.)
- *
- * @package application.modules.media
- * @since 2.0
- */
-class ModuleMedia_EntityMedia extends EntityORM
+class PluginMedia_ModuleMedia_EntityMedia extends EntityORM
 {
 
     protected $aValidateRules = array();
+    
+
+    protected $aJsonFields = array(
+        'data'
+    );
 
     protected $aRelations = array(
         'targets' => array(self::RELATION_TYPE_HAS_MANY, 'ModuleMedia_EntityTarget', 'media_id')
@@ -62,48 +42,20 @@ class ModuleMedia_EntityMedia extends EntityORM
         return $bResult;
     }
 
-    /**
-     * Возвращает URL до файла нужного размера, в основном используется для изображений
-     *
-     * @param null $sSize
-     *
-     * @return null
-     */
-    public function getFileWebPath($sSize = null)
-    {
-        if ($this->getFilePath()) {
-            return $this->Media_GetFileWebPath($this, $sSize);
-        } else {
-            return null;
+    public function getObject() {
+        switch ($this->getType()) {
+            case PluginMedia_ModuleMedia::MEDIA_TYPE_IMAGE:
+                return $this->Image_Open($this->getPath());
+                break;
+
         }
+        return null;
     }
-    
-    public function getFileServerPath($sSize = null)
-    {
-        if ($this->getFilePath()) {
-            return $this->Media_GetImagePathBySize($this->getPathServer(), $sSize);
-        } else {
-            return null;
-        }
-    }
-    
+        
     public function getPathServer() {
         return $this->Fs_GetPathServer($this->getFilePath());
     }
 
-    public function getData()
-    {
-        $aData = @unserialize($this->_getDataOne('data'));
-        if (!$aData) {
-            $aData = array();
-        }
-        return $aData;
-    }
-
-    public function setData($aRules)
-    {
-        $this->_aData['data'] = @serialize($aRules);
-    }
 
     public function getDataOne($sKey)
     {
@@ -119,11 +71,6 @@ class ModuleMedia_EntityMedia extends EntityORM
         $aData = $this->getData();
         $aData[$sKey] = $mValue;
         $this->setData($aData);
-    }
-
-    public function getRelationTarget()
-    {
-        return $this->_getDataOne('_relation_entity');
     }
     
     public function getCountTargets() {

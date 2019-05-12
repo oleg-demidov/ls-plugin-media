@@ -1,22 +1,25 @@
 
-{component_define_params params=[ 'targetType', 'targetId', 'userId', 'targetTmp', 'name' ]}
+{component_define_params params=[ 'targetType', 'targetId', 'targetTmp', 'name', 'attributes', 'url', 'isMultiple' ]}
 
-{$attributes = array_merge( $attributes|default:[], [
-    'data-param-target_type' => {$targetType|default:'user'},
-    'data-param-target_id'   => $targetId,
-    'data-param-user_id'   => $userId,
-    'data-param-security_ls_key'  => $LIVESTREET_SECURITY_KEY,
-    'data-type'             => 'uploader'
-])}
+{$attributes['data-uploder'] = true}
+{$attributes['data-param-target_type'] = $targetType}
+{$attributes['data-param-target_id'] = $targetId}
+{$attributes['data-param-security_ls_key'] = $LIVESTREET_SECURITY_KEY}
+{$attributes['data-url'] = $url}
 
-<div class="{$component} {cmods name=$component mods=$mods} {$classes}" {cattr list=$attributes}>
-    {* Drag & drop зона *}
-    {component 'bs-media' template='upload-area' name={$name|default:"filedata"}}
+
+<div class="{$classes}" {cattr list=$attributes}>
     
-    <div class="file-uploded-tmpl d-none row">
+    {* Drag & drop зона *}
+    <label class="media-upload-area" data-upload-area>{$name}
+        <span>{$label|default:{lang name='field.upload_area.label'}}</span>
+        <input data-file-input type="file" name="{$name|default:'file'}"  {$isMultiple|default:'multiple'}>
+    </label>
+    
+    <div class="d-none row mt-2" data-file-tmp>
         <div class="col-12 col-md-6">
             <div class="name-file">
-
+    
             </div>
         </div>
         

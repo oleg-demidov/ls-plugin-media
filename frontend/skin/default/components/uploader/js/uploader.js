@@ -11,7 +11,7 @@
 (function($) {
     "use strict";
 
-    $.widget( "livestreet.bsUploader", $.livestreet.lsComponent, {
+    $.widget( "livestreet.mediaUploader", $.livestreet.lsComponent, {
         /**
          * Дефолтные опции
          */
@@ -19,34 +19,27 @@
             // Ссылки
             urls: {
                 // Загрузка файла
-                upload: aRouter['ajax'] + 'media/upload/'                
             },
 
             // Селекторы
             selectors: {
                 // Drag & drop зона
-                upload_zone:  '[data-type="upload-area"]',
+                upload_zone:  '[data-upload-area]',
                 // Инпут
-                upload_input: '[data-type="file-input"]',
+                upload_input: '[data-file-input]',
                 
-                file_upl:".file-uploded-tmpl"
+                file_upl:"[data-file-tmp]"
             },
 
-            // Классы
-            classes: {
-                empty: 'is-empty'
-            },
-
+            
             // Настройки загрузчика
             fileupload : {
-                url: null,
                 sequentialUploads: false,
                 singleFileUploads: true,
                 limitConcurrentUploads: 3
             },
             
             i18n: {
-                errorDublicate:"A file with this name has already been added"
             },
 
             // Доп-ые параметры передаваемые в аякс запросах
@@ -65,29 +58,22 @@
          */
         _create: function () {
             this._super();
-
-            this._initFileUploader();
-
-            this._activeFilter = 'uploaded';
-
-        },
-
-        /**
-         * Иниц-ия загрузчика
-         */
-        _initFileUploader: function() {
-            // Настройки загрузчика
+            
             $.extend( this.option( 'fileupload' ), {
-                url:      this.option( 'urls.upload' ),
-                dropZone: this.elements.upload_zone,
-                formData:     this.option('params')
+                url:        this.element.data('url'),
+                formData:   this.option('params')
             });
-
-            // Иниц-ия плагина
+            console.log(this.option( 'fileupload' ))
+            
             this.elements.upload_input.fileupload( this.option( 'fileupload' ) );
-
-            // Коллбэки
-            this.element.on({
+            
+            this.elements.upload_input.on({
+                /**
+                 * Фикс fileupload не обрабатывает change
+                 */
+                change:function(e){
+                    $(e.currentTarget).fileupload('add', {files: $(e.currentTarget).prop('files')});
+                },
                 fileuploadadd: this.onUploadAdd.bind( this ),
                 fileuploaddone: function( event, data ) {
                     this[ data.result.bStateError ? 'onUploadError' : 'onUploadDone' ]( data.files[0], data.result );
@@ -97,10 +83,22 @@
                 }.bind( this ),
                 fileuploaddrop:this.onFileAdd.bind( this ),
                 fileuploadchange:this.onFileAdd.bind( this )
-            });
+            })
+
         },
 
-        
+        /**
+         * 
+         */
+        onUploadAdd: function( event, data ) {console.log('onUploadAdd')
+            let file = data.files[0]; 
+            let fileTpl = $(this.elements.file_upl.clone());
+            fileTpl.removeClass('d-none').attr('id', file.name.replace(/[^a-zA-Z0-9 ]/g, ""));
+            this.elements.upload_zone.append(fileTpl);
+            fileTpl.find('.name-file').html(file.name);
+            fileTpl.find('.close').on('click', data.abort);
+        },
+
 
         /**
          * 
@@ -113,17 +111,7 @@
                 .attr('aria-valuenow', percent);
         },
 
-        /**
-         * 
-         */
-        onUploadAdd: function( event, data ) {
-            let fileObj = data.files[0]; 
-            let file = $(this.elements.file_upl.clone());
-            file.removeClass('d-none').attr('id', fileObj.name.replace(/[^a-zA-Z0-9 ]/g, ""));
-            this.elements.upload_zone.append(file);
-            file.find('.name-file').html(fileObj.name);
-            file.find('.close').on('click', data.abort);
-        },
+        
 
         /**
          * 
