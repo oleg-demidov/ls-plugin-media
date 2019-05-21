@@ -61,7 +61,8 @@
             
             $.extend( this.option( 'fileupload' ), {
                 url:        this.element.data('url'),
-                formData:   this.option('params')
+                formData:   this.option('params'),
+                paramName:  this.elements.upload_input.attr('name')
             });
             console.log(this.option( 'fileupload' ))
             

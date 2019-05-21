@@ -1,51 +1,44 @@
 /**
  * Media
  *
- * @module ls/media
+ * @module ls/uploader
  *
  * @license   GNU General Public License, version 2
  * @copyright 2013 OOO "ЛС-СОФТ" {@link http://livestreetcms.com}
- * @author    Denis Shakhov <denis.shakhov@gmail.com>
- *
- * TODO: Фильтрация файлов по типу при переключении табов
+ * @author    Oleg Demidov
  */
 
 (function($) {
     "use strict";
 
-    $.widget( "livestreet.bsMedia", $.livestreet.lsComponent, {
+    $.widget( "livestreet.mediaMedia", $.livestreet.lsComponent, {
         /**
          * Дефолтные опции
          */
         options: {
-            
             // Ссылки
             urls: {
-                insert:aRouter.ajax + "media/submit-insert"
+                // Подгрузка файлов
+                load: aRouter['media'] + 'load/', 
             },
-
+            
             // Селекторы
             selectors: {
-                editor: '@.js-editor-default',
-                uploader: '[data-type="uploader"]',
-                library: '[data-type="library"]',
-                fields: '@[data-type="media-field"]',
-                btn: '[data-type="btn-modal"]',
-                modal:'@#mediaModal'
+                files:  '[data-library-files]',
+                uploader: '[data-uploader]'
+            },
+            // Классы
+            classes: {
+                file:'[data-library-file]'                
             },
 
-            uploader_options: {},
+            i18n: {
+            },
 
-            params: {},
-            
-            onSelectFile:null,
-            
-            onInsertEditor:null,
-            
-            field:null
+            // Доп-ые параметры передаваемые в аякс запросах
+            params: {}
+
         },
-        
-        
 
         /**
          * Конструктор
@@ -55,69 +48,80 @@
          */
         _create: function () {
             this._super();
+            this.elements.uploader.mediaUploader();
+            this._load('load', {}, 'append');
+        },
+        
+        
+        append: function(response){
+            this.elements.files.html(response.html);
             
-            this.elements.fields.bsMediaField();
-                        
-            this.attachFields(this.elements.fields);
-
-            this.elements.library.bsLibrary();
+            let files= this.elements.files.find(this.option('classes.file'));
             
-            this.elements.modal.on('show.bs.modal', function(e){
-                this.elements.library.bsLibrary('loadFiles');
-            }.bind(this));
-            
-            // Иниц-ия загрузчика 
-            this.elements.uploader.bsUploader({
-                i18n:{
-                    errorDublicate:ls.lang.get('media.uploader.notices.errorDublicate')
-                },
-                onFileUpload:function(){
-                    this.elements.library.bsLibrary('loadFiles')
-                }.bind(this)
-            });   
-            
-            this.elements.btn.attr('disable',true);
-            this._on(this.elements.btn, {click: "select"});
+//            files.mediaFile();
+//            
+//            files.on('click', function(e){
+//                this.selectItem( $(e.currentTarget) );
+//            }.bind(this));
             
         },
         
-        attachFields: function(fields){
-            fields.mousedown( function(e){
-                this.option('field', e.currentTarget);
+        selectItem: function(file){
+            this.elements.fileInfoEmpty.addClass('d-none');
+            this.elements.info.removeClass('d-none');
+            
+            this.elements.items.removeClass('border-1  p-1').addClass('p-2');
+            file.addClass('border-1 p-1').removeClass('p-2');
+            
+            $.each(this.option('infoList'), function(name, selector){
+                this.elements.info.find(selector).html(file.data(name))
             }.bind(this));
+            
+            //let sel = this.addSizesSelect(file.data('mediaSizes'));
+            
+            this.option('selectedItem', file);
+            
         },
         
-        select: function(e){
-            this.elements.modal.modal('hide')
-            let file = this.elements.library.bsLibrary('getSelectItem');
-            let size = this.elements.library.bsLibrary('getSelectSize');
-            if(file === null){
-                return;
+        getSelectSize: function(){
+            if(this.option('select') !== null){
+                return this.option('select').val();
             }
-            if(this.option('field') !== null){
-                $(this.option('field')).bsMediaField('add', file, size);
-                this.option('field', null);
-            }
-            this.insertEditor(file);
+        },
+        
+        addSizesSelect: function(sizes){
+            let sel = $(document.createElement('select')).attr('name', 'sizes');
             
-            this._trigger('onSelectFile', null, file);
+            $.each(sizes, function(i, size){
+                let opt = $(document.createElement('option'));
+                let sSize = size.w + "x" + (size.h !== null?size.h:"") + (size.crop?"crop":"");
+                opt.val(sSize).text(sSize);
+                sel.append(opt);
+            })
+            
+            this.elements.info.find(this.option('infoList.sizes')).html(sel);
+            
+            this.option('select', sel);
+            
+            return sel;
         },
         
-        insertEditor:function(file){
-            this._load( 'insert' , { ids: [file.data('id')] }, function( response ) {
-                this._trigger('onInsertEditor', null, response.sTextResult);
-                this.hide();
-            }.bind(this));
+        getSelectItem: function(){
+            if(!this.option('selectedItem')){
+                return null;
+            }
+            return this.option('selectedItem').clone();
         },
         
-        show:function(){
-            this.elements.modal.modal('show');
+        reset: function(){
+            this.elements.fileInfoEmpty.removeClass('d-none');
+            this.elements.info.addClass('d-none');
         },
         
-        hide:function(){
-            this.elements.modal.modal('hide');
+        onClickRemove: function(){
+            this._load('remove', {id:$(this.option('infoList.id')).text()}, "loadFiles");
         }
-        
+
         
     });
 })(jQuery);

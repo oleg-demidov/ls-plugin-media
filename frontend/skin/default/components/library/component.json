@@ -2,10 +2,12 @@
     "name": "library",
     "version": "1.0.0",
     "dependencies": {
-        
+        "media:uploader":"*"
     },
     "templates": {
-        "library": "library.tpl"        
+        "library": "library.tpl",
+        "file": "file.tpl",
+        "files": "files.tpl"
     },
     "scripts": {
         "library": "js/library.js"

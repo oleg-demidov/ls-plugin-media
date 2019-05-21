@@ -1,5 +1,5 @@
 
 jQuery(document).ready(function($){
-    $('[data-uploader]').mediaUploader()
+    $('[data-library]').mediaLibrary()
 });
 

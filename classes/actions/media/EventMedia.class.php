@@ -52,35 +52,27 @@ class PluginMedia_ActionMedia_EventMedia extends Event {
     }
 
 
-    public function EventMediaLoadGallery()
+    public function EventMediaLoad()
     {
         
-
-        $sType = getRequestStr('target_type');
-        $sId = getRequestStr('target_id');
-        $sTmp = getRequestStr('target_tmp');
         $iPage = (int)getRequestStr('page');
         $iPage = $iPage < 1 ? 1 : $iPage;
 
         /**
-        * Получаем все медиа, созданные пользователем без учета временных
+        * Получаем все медиа, созданные пользователем 
         */
-        $aResult = $this->Media_GetMediaItemsByFilter(array(
+        $aResult = $this->PluginMedia_Media_GetMediaItemsByFilter(array(
             'user_id'       => $this->oUserCurrent->getId(),
-            '#with'         => ['targets'],
             '#page'         => array($iPage, 12),
-            '#group'        => 'id',
-            '#order'        => array('id' => 'desc')
         ));
         
         $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, 12, Config::Get('pagination.pages.count'), null);
-        $aMediaItems = $aResult['collection'];
+        $aMedias = $aResult['collection'];
 
         $oViewer = $this->Viewer_GetLocalViewer();
-        $sTemplate = '';
-        $oViewer->Assign('items', $aMediaItems, true);
-        $oViewer->Assign('paging', $aPaging, true);
-        $sTemplate .= $oViewer->Fetch('component@bs-media.files');
+        $oViewer->Assign('aMedias', $aMedias, true);
+        $oViewer->Assign('aPaging', $aPaging, true);
+        $sTemplate = $oViewer->Fetch('component@media:media.list');
         
         $this->Viewer_AssignAjax('html', $sTemplate);
     }
@@ -92,62 +84,44 @@ class PluginMedia_ActionMedia_EventMedia extends Event {
         /**
          * Файл был загружен?
          */
-        if (!isset($_FILES['files']['tmp_name'])) {
+        if (!isset($_FILES['file']['tmp_name'])) {
             $this->Message_AddError( $this->Lang_Get('plugin.media.uploader.notices.error_no_file'));
             return;
         }
         
         /**
-         * Выясняем тип медиа
+         * Создаем медиа
+         */       
+        $oMedia = Engine::GetEntity('PluginMedia_Media_Media', $_FILES['file']);
+        $oMedia->setUserId($this->oUserCurrent->getId());
+        /*
+         * Проверяем 
          */
-        
-        $this->Logger_Notice($sType);
-        
-        //$oMedia = $this->PluginMedia_Media_GetMediaFromRequest($_REQUEST);
-        
-        /**
-         * Проверяем лимит медиа для пользователя
-         */
-        
-        return;
-        /**
-         * Проверяем корректность target'а
-         */
-        $sTargetType = getRequestStr('target_type', "user");
-        $sUserId = getRequestStr('user_id', getRequestStr('target_id', 0));
-
-        /**
-         * TODO: необходима проверка на максимальное общее количество файлов, на максимальный размер файла
-         * Эти настройки можно хранить в конфиге: module.media.type.topic.max_file_count=30 и т.п.
-         */
-        $oMedia = $this->Media_GetMediaByFilter([
-            'target_type'   => $sTargetType,
-            'user_id'     => $sUserId,
-            'file_name'     => substr($_FILES['filedata']['name'], 0, strrpos($_FILES['filedata']['name'], "."))
-        ]);
-        if($oMedia){
-            $this->Message_AddError( $this->Lang_Get('media.uploader.notices.errorDublicate'));
+        $oMedia->_setValidateScenario('upload');
+        if(!$oMedia->_Validate()){
+            $this->Message_AddError( $oMedia->_getValidateError());
             return;
         }
-        /**
-         * Выполняем загрузку файла
+        
+         /**
+         * Проверяем лимит медиа для пользователя
          */
-        if ($mResult = $this->Media_Upload($_FILES['filedata'], $sTargetType , $sUserId) and is_object($mResult)) {
+        $iUserMediaCount = $this->PluginMedia_Media_GetCountFromMediaByFilter(['user_id' => $this->oUserCurrent->getId()]);
+        $iMaxCount = $this->PluginMedia_Media_GetConfigParam( 'max_user_count', $oMedia->getType());
+        if($iUserMediaCount >= $iMaxCount and !$this->oUserCurrent->isAdmin()){
+            $this->Message_AddError( $this->Lang_Get('plugin.media.uploader.notices.error_upload_count', ['count' => $iMaxCount]));
+            return;
+        }
+        /*
+         * Загружаем
+         */       
+        if ($mResult = $this->PluginMedia_Media_Upload($oMedia) and is_object($mResult)) {
             $this->Viewer_AssignAjax('iMediaId', $mResult->getId());
         } else {
             $this->Message_AddError(is_string($mResult) ? $mResult : $this->Lang_Get('common.error.system.base'),
                 $this->Lang_Get('common.error.error'));
         }
-    }
-    
-    public function EventMediaGenerateTargetTmp()
-    {
-        $sType = getRequestStr('type');
-        if ($this->Media_IsAllowTargetType($sType)) {
-            $sTmp = func_generator();
-            $this->Session_SetCookie('media_target_tmp_' . $sType, $sTmp, time() + 24 * 3600);
-            $this->Viewer_AssignAjax('sTmpKey', $sTmp);
-        }
+       
     }
     
     public function EventMediaLoadGalleryOld()

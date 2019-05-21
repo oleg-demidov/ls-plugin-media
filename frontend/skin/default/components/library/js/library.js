@@ -5,13 +5,13 @@
  *
  * @license   GNU General Public License, version 2
  * @copyright 2013 OOO "ЛС-СОФТ" {@link http://livestreetcms.com}
- * @author    Denis Shakhov <denis.shakhov@gmail.com>
+ * @author    Oleg Demidov
  */
 
 (function($) {
     "use strict";
 
-    $.widget( "livestreet.bsLibrary", $.livestreet.lsComponent, {
+    $.widget( "livestreet.mediaLibrary", $.livestreet.lsComponent, {
         /**
          * Дефолтные опции
          */
@@ -19,33 +19,17 @@
             // Ссылки
             urls: {
                 // Подгрузка файлов
-                load: aRouter['ajax'] + 'media/load-gallery/', 
-                remove: aRouter['ajax'] + 'media/remove-file/',               
+                load: aRouter['media'] + 'load/', 
             },
-
+            
             // Селекторы
             selectors: {
-                files:  '[data-type="lib-files"]',
-                libInfo: '[data-type="lib-info"]',
-                fileInfoEmpty: '[data-type="info-empty"]',
-                info: '[data-type="file-info"]',
-                btnRemove:'[data-type="file-remove"]'
+                files:  '[data-library-files]',
+                uploader: '[data-uploader]'
             },
-            // Классы
-            infoList: {
-                id:'[data-type="id"]',
-                img:'[data-type="img"]',
-                name:'[data-type="name"]',
-                date:'[data-type="date"]',
-                dimensions:'[data-type="dimensions"]',
-                countTargets:'[data-type="count-targets"]',
-                size:'[data-type="size"]',
-                sizes: '[data-type="sizes"]'
-            },
-
             // Классы
             classes: {
-                item:'[data-type="lib-file"]'                
+                file:'[data-library-file]'                
             },
 
             i18n: {
@@ -64,35 +48,22 @@
          */
         _create: function () {
             this._super();
-
-            this.elements.btnRemove.lsConfirm({
-                message: ls.lang.get('media.notices.confirm_remove_file'),
-                onconfirm: this.onClickRemove.bind(this)
-            });
-            
-        },
-        
-        loadFiles:function(){
-            this.reset();
+            this.elements.uploader.mediaUploader();
             this._load('load', {}, 'append');
         },
+        
         
         append: function(response){
             this.elements.files.html(response.html);
             
-            this.elements.items= this.elements.files.find(this.option('classes.item'))
-            this.elements.items.on('click', function(e){
-                this.selectItem( $(e.currentTarget) );
-            }.bind(this));
+            let files= this.elements.files.find(this.option('classes.file'));
             
-            this.elements.files.find('[data-type="pagination"]').bsPagination({
-                goPage:function(e,page){
-                    this.reset();
-                    this._load('load', {page:page}, 'append');
-                }.bind(this)
-            });
+//            files.mediaFile();
+//            
+//            files.on('click', function(e){
+//                this.selectItem( $(e.currentTarget) );
+//            }.bind(this));
             
-            this.elements.files.find('[data-toggle="popover"]').popover();
         },
         
         selectItem: function(file){

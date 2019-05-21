@@ -25,13 +25,13 @@
  * @package application.modules.media
  * @since 2.0
  */
-class ModuleMedia_EntityTarget extends EntityORM
+class PluginMedia_ModuleMedia_EntityTarget extends EntityORM
 {
 
     protected $aValidateRules = array();
 
     protected $aRelations = array(
-        'media' => array(self::RELATION_TYPE_BELONGS_TO, 'ModuleMedia_EntityMedia', 'media_id'),
+        'media' => array(self::RELATION_TYPE_BELONGS_TO, 'PluginMedia_ModuleMedia_EntityMedia', 'media_id'),
     );
 
     protected function beforeSave()
@@ -51,7 +51,7 @@ class ModuleMedia_EntityTarget extends EntityORM
              * Удаляем превью
              */
             if ($this->getIsPreview() and $oMedia = $this->getMedia()) {
-                $this->Media_RemoveFilePreview($oMedia, $this);
+                $this->PluginMedia_Media_RemoveFilePreview($oMedia, $this);
             }
         }
         return $bResult;
@@ -94,7 +94,7 @@ class ModuleMedia_EntityTarget extends EntityORM
         $aSizes = $this->getDataOne('image_preview_sizes');
         if ($sPathbase and $aSizes) {
             foreach ($aSizes as $aSize) {
-                $aPreviewItems[] = $this->Media_GetImageWebPath($sPathbase, $aSize);
+                $aPreviewItems[] = $this->PluginMedia_Media_GetImageWebPath($sPathbase, $aSize);
             }
         }
         return $aPreviewItems;

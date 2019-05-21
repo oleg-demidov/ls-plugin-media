@@ -2,16 +2,13 @@
     "name": "media",
     "version": "1.0.0",
     "dependencies": {
-        "media:uploader":"*"
+        
     },
     "templates": {
-        "media": "media.tpl",
-        "modal": "media.modal.tpl"
-        
+        "item": "media-item.tpl",
+        "list": "media-list.tpl"
     },
     "scripts": {
-        
-    },
-    "styles": {
+        "media": "js/media.js"
     }
 }
