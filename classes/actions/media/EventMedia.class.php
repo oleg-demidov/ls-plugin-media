@@ -116,7 +116,10 @@ class PluginMedia_ActionMedia_EventMedia extends Event {
          * Загружаем
          */       
         if ($mResult = $this->PluginMedia_Media_Upload($oMedia) and is_object($mResult)) {
-            $this->Viewer_AssignAjax('iMediaId', $mResult->getId());
+            $oViewer = $this->Viewer_GetLocalViewer();
+            $oViewer->Assign('oMedia', $mResult, true);
+            $sTemplate = $oViewer->Fetch('component@media:media.item');
+            $this->Viewer_AssignAjax('sMediaItem', $sTemplate);
         } else {
             $this->Message_AddError(is_string($mResult) ? $mResult : $this->Lang_Get('common.error.system.base'),
                 $this->Lang_Get('common.error.error'));

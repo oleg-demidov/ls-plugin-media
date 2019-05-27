@@ -60,6 +60,7 @@
             this._super();
             
             $.extend( this.option( 'fileupload' ), {
+                fileInput:  this.elements.upload_input,
                 url:        this.element.data('url'),
                 formData:   this.option('params'),
                 paramName:  this.elements.upload_input.attr('name')
@@ -76,14 +77,15 @@
                     $(e.currentTarget).fileupload('add', {files: $(e.currentTarget).prop('files')});
                 },
                 fileuploadadd: this.onUploadAdd.bind( this ),
-                fileuploaddone: function( event, data ) {
-                    this[ data.result.bStateError ? 'onUploadError' : 'onUploadDone' ]( data.files[0], data.result );
-                }.bind( this ),
+//                fileuploaddone: function( event, data ) {
+//                    console.log('fileuploaddone',data)
+//                    this[ data.result.bStateError ? 'onUploadError' : 'onUploadDone' ]( data.files[0], data.result );
+//                }.bind( this ),
                 fileuploadprogress: function( event, data ) {
                     this.onUploadProgress( data.files[0], parseInt( data.loaded / data.total * 100, 10 ) );
                 }.bind( this ),
-                fileuploaddrop:this.onFileAdd.bind( this ),
-                fileuploadchange:this.onFileAdd.bind( this )
+//                fileuploaddrop:this.onFileAdd.bind( this ),
+//                fileuploadchange:this.onFileAdd.bind( this )
             })
 
         },
@@ -91,13 +93,19 @@
         /**
          * 
          */
-        onUploadAdd: function( event, data ) {console.log('onUploadAdd')
-            let file = data.files[0]; 
-            let fileTpl = $(this.elements.file_upl.clone());
-            fileTpl.removeClass('d-none').attr('id', file.name.replace(/[^a-zA-Z0-9 ]/g, ""));
-            this.elements.upload_zone.append(fileTpl);
-            fileTpl.find('.name-file').html(file.name);
-            fileTpl.find('.close').on('click', data.abort);
+        onUploadAdd: function( event, data ) {
+            
+            console.log('onUploadAdd', data);
+            
+            data.progress = function(a1,a2){
+                console.log(a1,a2)
+            }
+//            let file = data.files[0]; 
+//            let fileTpl = $(this.elements.file_upl.clone());
+//            fileTpl.removeClass('d-none').attr('id', file.name.replace(/[^a-zA-Z0-9 ]/g, ""));
+//            this.elements.upload_zone.append(fileTpl);
+//            fileTpl.find('.name-file').html(file.name);
+//            fileTpl.find('.close').on('click', data.abort);
         },
 
 

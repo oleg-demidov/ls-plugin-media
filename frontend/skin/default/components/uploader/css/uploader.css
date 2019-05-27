@@ -6,15 +6,17 @@
 /**
  * Upload area
  */
+.uploader{
+    
+}
 .media-upload-area {
     position: relative;
+    border: 3px dashed #eee;
+    margin: -2px;
     overflow: hidden;
     cursor: pointer;
     display: block;
-    border: 3px dashed #eee;
     color: #555;
-    padding: 20px;
-    margin-bottom: 20px;
     text-align: center;
 }
 .media-upload-area input[type=file] {

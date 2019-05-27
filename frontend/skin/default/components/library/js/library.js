@@ -24,12 +24,12 @@
             
             // Селекторы
             selectors: {
-                files:  '[data-library-files]',
+                medias:  '[data-library-medias]',
                 uploader: '[data-uploader]'
             },
             // Классы
             classes: {
-                file:'[data-library-file]'                
+                media:'[data-library-media]'                
             },
 
             i18n: {
@@ -54,9 +54,9 @@
         
         
         append: function(response){
-            this.elements.files.html(response.html);
+            this.elements.medias.append($(response.html));
             
-            let files= this.elements.files.find(this.option('classes.file'));
+            let medias= this.elements.medias.find(this.option('classes.media'));
             
 //            files.mediaFile();
 //            

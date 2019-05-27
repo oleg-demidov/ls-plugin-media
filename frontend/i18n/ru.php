@@ -17,6 +17,8 @@ return [
         ]
     ],
     'uploader' => [
+        'label' => "Загрузить",
+        'max_size' => 'Максимальный размер %%max_size%%Kb',
         'notices' => [
             'error_too_large' => 'Превышен максимальный размер загружаемого файла %%size%%',
             'error_no_file' => 'Файл не загружен',

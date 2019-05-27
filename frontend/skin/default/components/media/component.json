@@ -10,5 +10,8 @@
     },
     "scripts": {
         "media": "js/media.js"
+    },
+    "styles":{
+        "media":"css/media.css"
     }
 }
