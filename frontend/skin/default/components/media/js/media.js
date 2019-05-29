@@ -18,23 +18,20 @@
         options: {
             // Ссылки
             urls: {
-                // Подгрузка файлов
-                load: aRouter['media'] + 'load/', 
+                
             },
             
             // Селекторы
             selectors: {
-                files:  '[data-library-files]',
-                uploader: '[data-uploader]'
+                
             },
             // Классы
             classes: {
-                file:'[data-library-file]'                
             },
 
             i18n: {
             },
-
+            upload:null,
             // Доп-ые параметры передаваемые в аякс запросах
             params: {}
 
@@ -48,21 +45,17 @@
          */
         _create: function () {
             this._super();
-            this.elements.uploader.mediaUploader();
-            this._load('load', {}, 'append');
+            
+            this.element.removeClass('d-none');
+            
+            if(this.option('upload') !== null){
+                this.upload(this.option('upload'));
+            }
         },
         
         
-        append: function(response){
-            this.elements.files.html(response.html);
-            
-            let files= this.elements.files.find(this.option('classes.file'));
-            
-//            files.mediaFile();
-//            
-//            files.on('click', function(e){
-//                this.selectItem( $(e.currentTarget) );
-//            }.bind(this));
+        upload: function(upload){
+            console.log('mediaUpload',upload)
             
         },
         

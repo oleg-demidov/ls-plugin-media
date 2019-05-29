@@ -6,6 +6,8 @@
 /**
  * Upload area
  */
-.media-item {
-    
+[data-media-item] {
+    min-height: 100px;
+    min-width: 100px;
+    background-image: url(../img/upload.png);
 }

@@ -1,8 +1,6 @@
 
-{component_define_params params=[  'oMedia' , 'attributes', 'classes', 'mods' ]}
+{component_define_params params=[ 'id', 'img', 'alt', 'attributes', 'classes', 'mods' ]}
 
-<div class="{$component} p-2 media-item" data-id="{$oMedia->getId()}">
-    <div>
-        <img src="{$oMedia->getObject()->getWebPath('100x100crop')}" alt="{$oMedia->getName()}">
-    </div>
+<div class="p-2 {$classes}" data-media-item {cattr list=$attributes} {if $img}style="background-image: url({$img});"{/if}>
+    {component "bs-progressbar" height=30 classes="d-none"}
 </div>

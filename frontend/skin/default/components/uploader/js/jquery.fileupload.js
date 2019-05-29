@@ -399,6 +399,10 @@
                     loaded,
                     data.bitrateInterval
                 );
+        
+                if (typeof data.onProgress === "function") {
+                    data.onProgress();
+                }
                 // Trigger a custom progress event with a total data property set
                 // to the file size(s) of the current upload and a loaded data
                 // property calculated accordingly:
@@ -879,6 +883,9 @@
             response.textStatus = options.textStatus = textStatus;
             response.jqXHR = options.jqXHR = jqXHR;
             this._trigger('done', null, options);
+            if (typeof options.onDone === "function") {
+                options.onDone();
+            }
         },
 
         _onFail: function (jqXHR, textStatus, errorThrown, options) {
@@ -893,6 +900,9 @@
             response.textStatus = options.textStatus = textStatus;
             response.errorThrown = options.errorThrown = errorThrown;
             this._trigger('fail', null, options);
+            if (typeof options.onFail === "function") {
+                options.onFail();
+            }
         },
 
         _onAlways: function (jqXHRorResult, textStatus, jqXHRorError, options) {

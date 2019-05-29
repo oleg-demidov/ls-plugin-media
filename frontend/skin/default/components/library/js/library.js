@@ -25,7 +25,8 @@
             // Селекторы
             selectors: {
                 medias:  '[data-library-medias]',
-                uploader: '[data-uploader]'
+                uploader: '[data-uploader]',
+                mediaTpl:  '.media-tpl',
             },
             // Классы
             classes: {
@@ -48,10 +49,21 @@
          */
         _create: function () {
             this._super();
-            this.elements.uploader.mediaUploader();
+            
+            this.elements.uploader.mediaUploader({
+                onUploadAdd: this.uploadMedia.bind(this)
+            });
+            
             this._load('load', {}, 'append');
         },
         
+        uploadMedia: function(event, data){
+            let media = this.elements.mediaTpl.clone();
+            media.mediaMedia({
+                upload:data
+            });
+            this.elements.medias.prepend(media);
+        },
         
         append: function(response){
             this.elements.medias.append($(response.html));
