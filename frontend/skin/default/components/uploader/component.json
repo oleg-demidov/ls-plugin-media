@@ -9,7 +9,7 @@
     },
     "scripts": {
         "uploader": "js/uploader.js",
-        "fileuploader":"js/jquery.fileupload.js"
+        "fileuploader":"js/jquery.dm-uploader.js"
     },
     "styles":{
         "uploader":"css/uploader.css"

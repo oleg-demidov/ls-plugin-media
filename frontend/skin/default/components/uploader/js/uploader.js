@@ -34,9 +34,7 @@
             
             // Настройки загрузчика
             fileupload : {
-                sequentialUploads: false,
-                singleFileUploads: true,
-                limitConcurrentUploads: 3
+                
             },
             
             i18n: {
@@ -60,32 +58,20 @@
             this._super();
             
             $.extend( this.option( 'fileupload' ), {
-                fileInput:  this.elements.upload_input,
+                fieldName:  this.elements.upload_input.attr('name'),
                 url:        this.element.data('url'),
-                formData:   this.option('params'),
-                paramName:  this.elements.upload_input.attr('name')
+                extraData:  function(){
+                    return this.option('params')
+                }.bind(this),
+                dataType:   "json"
             });
             console.log(this.option( 'fileupload' ))
             
-            this.elements.upload_input.fileupload( this.option( 'fileupload' ) );
+            this.elements.upload_zone.dmUploader( this.option( 'fileupload' ) );
             
             this.elements.upload_input.on({
-                /**
-                 * Фикс fileupload не обрабатывает change
-                 */
-                change:function(e){
-                    $(e.currentTarget).fileupload('add', {files: $(e.currentTarget).prop('files')});
-                },
-                fileuploadadd: this.onUploadAdd.bind( this ),
-//                fileuploaddone: function( event, data ) {
-//                    console.log('fileuploaddone',data)
-//                    this[ data.result.bStateError ? 'onUploadError' : 'onUploadDone' ]( data.files[0], data.result );
-//                }.bind( this ),
-                fileuploadprogress: function( event, data ) {
-                    this.onUploadProgress( data.files[0], parseInt( data.loaded / data.total * 100, 10 ) );
-                }.bind( this ),
-//                fileuploaddrop:this.onFileAdd.bind( this ),
-//                fileuploadchange:this.onFileAdd.bind( this )
+                onNewFile: this.onNewFile.bind( this ),
+                onUploadProgress: this.onUploadProgress.bind( this ),
             })
 
         },
@@ -93,13 +79,14 @@
         /**
          * 
          */
-        onUploadAdd: function( event, data ) {
+        onNewFile: function( id, file ) {
             
             console.log('onUploadAdd', data);
             
-            data.progress = function(a1,a2){
-                console.log(a1,a2)
-            }
+            data.then(function(  event, data) {
+                console.log('process', data);
+            });
+        
 //            let file = data.files[0]; 
 //            let fileTpl = $(this.elements.file_upl.clone());
 //            fileTpl.removeClass('d-none').attr('id', file.name.replace(/[^a-zA-Z0-9 ]/g, ""));
@@ -112,12 +99,8 @@
         /**
          * 
          */
-        onUploadProgress: function( fileObj, percent ) {
-            let file = this.elements.upload_zone.find('#'+fileObj.name.replace(/[^a-zA-Z0-9 ]/g, ""));
-            file.find('.progress-bar')
-                .html(percent+"%")
-                .attr('style', "width: "+percent+"%")
-                .attr('aria-valuenow', percent);
+        onUploadProgress: function(  id, percent) {
+            console.log('onUploadProgress', data.progress());
         },
 
         
