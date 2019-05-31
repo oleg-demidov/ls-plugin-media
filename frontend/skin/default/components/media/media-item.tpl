@@ -1,6 +1,12 @@
 
 {component_define_params params=[ 'id', 'img', 'alt', 'attributes', 'classes', 'mods' ]}
 
-<div class="p-2 {$classes}" data-media-item {cattr list=$attributes} {if $img}style="background-image: url({$img});"{/if}>
-    {component "bs-progressbar" height=30 classes="d-none"}
+<div class="m-2 {$classes} " data-media-item {cattr list=$attributes} {if $img}style="background-image: url({$img});"{/if}>
+    <button type="button" class="close media-close text-danger mr-1 d-none" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    {component "bs-progressbar" 
+        height=10 
+        classes="w-100 mx-2 progress-media d-none" 
+    }
 </div>

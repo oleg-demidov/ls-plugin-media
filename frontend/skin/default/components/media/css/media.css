@@ -11,3 +11,8 @@
     min-width: 100px;
     background-image: url(../img/upload.png);
 }
+
+.progress.progress-media{
+    margin-top: 36px;
+    font-size: 9px;
+}

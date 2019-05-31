@@ -20,4 +20,6 @@
         <input data-file-input type="file" name="{$name|default:'file'}"  {$isMultiple|default:'multiple'}>
     </label>
     
+    {component "media:media.item" classes="media-tpl d-none" }
+    
 </div>

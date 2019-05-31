@@ -11,7 +11,7 @@
 }
 .media-upload-area {
     position: relative;
-    border: 3px dashed #eee;
+    border: 3px dashed #dfdcdc;
     margin: -2px;
     overflow: hidden;
     cursor: pointer;

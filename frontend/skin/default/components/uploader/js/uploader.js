@@ -26,15 +26,17 @@
                 // Drag & drop зона
                 upload_zone:  '[data-upload-area]',
                 // Инпут
-                upload_input: '[data-file-input]'
+                upload_input: '[data-file-input]',
+                
+                mediaTpl: ".media-tpl",
+                
+                medias:  '@[data-library-medias]',
             },
 
             
             // Настройки загрузчика
             fileupload : {
-                sequentialUploads: false,
-                singleFileUploads: true,
-                limitConcurrentUploads: 3
+                
             },
             
             i18n: {
@@ -43,7 +45,9 @@
             // Доп-ые параметры передаваемые в аякс запросах
             params: {},
             
-            onUploadAdd:null
+            onUploadAdd:null,
+            
+            uploadableFiles:[]
 
         },
 
@@ -57,33 +61,100 @@
             this._super();
             
             $.extend( this.option( 'fileupload' ), {
-                fileInput:  this.elements.upload_input,
+                fieldName:  this.elements.upload_input.attr('name'),
+                
                 url:        this.element.data('url'),
-                formData:   this.option('params'),
-                paramName:  this.elements.upload_input.attr('name')
+                
+                extraData:  function(){
+                    return this.option('params')
+                }.bind(this),
+                
+                dataType:   "json",
+                
+//                onInit: function(){console.log('init')},
+                
+                onNewFile: this.onNewFile.bind( this ),
+                
+                onUploadProgress: this.onUploadProgress.bind( this ),
+                
+                onUploadSuccess: this.onUploadSuccess.bind( this ),
+                
+                onDocumentDragEnter: function(){
+                    this.option('originalColorBorder', this.elements.upload_zone.css('border-color'));
+                    this.elements.upload_zone.css('border-color', 'green');
+                }.bind(this),
+                
+                onDocumentDragLeave: function(){
+                    this.elements.upload_zone.css('border-color', this.option('originalColorBorder'));
+                }.bind(this),
             });
             
-            this.elements.upload_input.fileupload( this.option( 'fileupload' ) );
-            
-            this.elements.upload_input.on({
-                /**
-                 * Фикс fileupload не обрабатывает change
-                 */
-                change:function(e){
-                    $(e.currentTarget).fileupload('add', {files: $(e.currentTarget).prop('files')});
-                },
-                fileuploadadd: this.onUploadAdd.bind( this )
-            })
-
+//            console.log(this.option( 'fileupload' ))
+            this.elements.upload_zone.dmUploader( this.option( 'fileupload' ) );
+           
         },
 
         /**
          * 
          */
-        onUploadAdd: function( event, data ) {
-            this._trigger('onUploadAdd', event, data);
+
+        onNewFile: function( id, file ) {
+            let media = this.elements.mediaTpl.clone();
+            
+            media.prependTo(this.elements.medias).mediaMedia({
+                isUploadable:true,
+                id:id,
+                onCancelUpload: function(event, id){
+                    this.elements.upload_zone.dmUploader('cancel', id);
+                }.bind(this)
+            });
+            
+            this.option('uploadableFiles')[id] = media;
             
         },
 
+        /**
+         * 
+         */
+        onUploadProgress: function(  id, percent) {
+            if(this.option('uploadableFiles')[id] !== undefined){
+                this.option('uploadableFiles')[id].trigger('onUploadProgress', percent);
+            }
+        },
+
+        
+
+        /**
+         * 
+         */
+        onUploadSuccess: function( id, data ) {
+            if(this.option('uploadableFiles')[id] !== undefined){
+                this.option('uploadableFiles')[id].trigger('onUploadSuccess',data );
+            }
+        },
+
+        /**
+         * 
+         */
+        onUploadError: function( fileObj, response ) {
+            ls.msg.error( response.sMsgTitle, response.sMsg);
+            
+            let file = this.elements.upload_zone.find('#'+fileObj.name.replace(/[^a-zA-Z0-9 ]/g, ""));
+            setTimeout(function(){file.hide(500);}, 3000);
+            file.find('.close').on('click', function(){
+                file.hide();
+            });
+            
+            this._trigger('onFileError', null, { file: fileObj, response: response });
+        },
+
+        onFileAdd: function(event, data){
+            let fileObj = data.files[0];
+            let file = this.elements.upload_zone.find('#'+fileObj.name.replace(/[^a-zA-Z0-9 ]/g, ""));
+            if(file.length){
+                ls.msg.error( this._i18n('errorDublicate'));
+                return false;
+            }
+        }
     });
 })(jQuery);
