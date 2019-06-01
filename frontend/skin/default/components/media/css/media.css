@@ -12,6 +12,10 @@
     background-image: url(../img/upload.png);
 }
 
+[data-media-item]:hover{
+    border-color: #6c757d!important;
+}
+
 .progress.progress-media{
     margin-top: 36px;
     font-size: 9px;

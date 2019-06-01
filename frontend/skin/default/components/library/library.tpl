@@ -11,7 +11,15 @@
     {component "media:uploader" }
     
     <div class="d-flex flex-wrap py-2" data-library-medias></div>
-   
-    {component "media:media.item" classes = "media-tpl  d-none"}
     
+    
+    {component "bs-modal"
+        bmods   = "lg"
+        attributes = [
+            'data-media-modal' => true
+        ]
+        header  = ""
+        content = "media"
+    }
+
 </div>

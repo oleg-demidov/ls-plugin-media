@@ -24,13 +24,12 @@
             
             // Селекторы
             selectors: {
-                medias:  '[data-library-medias]',
-                uploader: '[data-uploader]',
-                mediaTpl:  '.media-tpl',
+                mediaContainer:  '[data-library-medias]',
+                uploader: '[data-uploader]'
             },
             // Классы
             classes: {
-                media:'[data-library-media]'                
+                media:'[data-media-item]'                
             },
 
             i18n: {
@@ -51,30 +50,20 @@
             this._super();
             
             this.elements.uploader.mediaUploader({
-                onUploadAdd: this.uploadMedia.bind(this)
+                mediaContainer: this.elements.mediaContainer
             });
             
             this._load('load', {}, 'append');
         },
         
-        uploadMedia: function(event, data){
-            let media = this.elements.mediaTpl.clone();
-            media.mediaMedia({
-                upload:data
-            });
-            this.elements.medias.prepend(media);
-        },
         
         append: function(response){
-            this.elements.medias.append($(response.html));
+            this.elements.mediaContainer.append($(response.html));
             
-            let medias= this.elements.medias.find(this.option('classes.media'));
+            let medias= this.elements.mediaContainer.find(this.option('classes.media'));
             
-//            files.mediaFile();
-//            
-//            files.on('click', function(e){
-//                this.selectItem( $(e.currentTarget) );
-//            }.bind(this));
+            medias.mediaMedia();
+
             
         },
         

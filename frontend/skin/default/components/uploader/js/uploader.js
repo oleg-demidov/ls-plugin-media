@@ -28,11 +28,10 @@
                 // Инпут
                 upload_input: '[data-file-input]',
                 
-                mediaTpl: ".media-tpl",
-                
-                medias:  '@[data-library-medias]',
+                mediaTpl: ".media-tpl"
             },
 
+            mediaContainer:$(),
             
             // Настройки загрузчика
             fileupload : {
@@ -101,7 +100,7 @@
         onNewFile: function( id, file ) {
             let media = this.elements.mediaTpl.clone();
             
-            media.prependTo(this.elements.medias).mediaMedia({
+            media.prependTo(this.option('mediaContainer')).mediaMedia({
                 isUploadable:true,
                 id:id,
                 onCancelUpload: function(event, id){

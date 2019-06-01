@@ -52,7 +52,7 @@ class PluginMedia_ActionMedia_EventMedia extends Event {
     }
 
 
-    public function EventMediaLoad()
+    public function EventLoad()
     {
         
         $iPage = (int)getRequestStr('page');

@@ -18,14 +18,15 @@
         options: {
             // Ссылки
             urls: {
-                
+                loadInfo: aRouter.media + "info"
             },
             
             id: 0,
             // Селекторы
             selectors: {
-                progress: ".progress",
-                close:".media-close"
+                progress:   ".progress",
+                close:      ".media-close",
+                mediaModal: "@[data-media-modal]"
             },
             // Классы
             classes: {
@@ -57,6 +58,8 @@
                 this.elements.progress.removeClass('d-none');
                 this.element.on('onUploadProgress', this.onUploadProgress.bind(this));
                 this.element.on('onUploadSuccess', this.onUploadSuccess.bind(this))
+            }else{
+                this._on(this.element, {click:"onClick"})
             }
         },
         
@@ -80,7 +83,11 @@
             this.element.css('background-image', 'url('+ data.path +')');
             this.elements.close.remove();
             
-        }      
+        },
+        
+        onClick:function(e){
+            this.elements.mediaModal.modal('show');
+        }
 
         
     });
