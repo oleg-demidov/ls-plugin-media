@@ -32,6 +32,7 @@ class PluginMedia_ActionMedia extends ActionPlugin
         $this->RegisterEventExternal('Media', 'PluginMedia_ActionMedia_EventMedia');
         $this->AddEventPreg( '/^upload$/', '/^$/', 'Media::EventUpload');
         $this->AddEventPreg( '/^load$/', '/^$/', 'Media::EventLoad');
+        $this->AddEventPreg( '/^info$/', '/^$/', 'Media::EventInfo');
         $this->AddEventPreg( '/^remove-file$/', '/^$/', 'Media::EventMediaRemoveFile');        
     }
 

@@ -86,7 +86,7 @@
         },
         
         onClick:function(e){
-            //this.elements.mediaModal.modal('show');
+            this.elements.mediaModal.modal('show');
         }
 
         

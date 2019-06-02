@@ -29,7 +29,8 @@
             },
             // Классы
             classes: {
-                media:'[data-media-item]'                
+                media:'[data-media-item]' ,  
+                choose:"choose"
             },
 
             i18n: {
@@ -63,9 +64,13 @@
             let medias= this.elements.mediaContainer.find(this.option('classes.media'));
             
             medias.mediaMedia();
-
+            
+            medias.on('click', function(event){
+                $(event.currentTarget).toggleClass(this.option('classes.choose'))
+            }.bind(this));
             
         },
+        
         
         selectItem: function(file){
             this.elements.fileInfoEmpty.addClass('d-none');
