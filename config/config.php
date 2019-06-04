@@ -7,6 +7,10 @@ $config['$root$']['db']['table']['media_media_target'] = '___db.table.prefix___m
 
 $config['$root$']['router']['page']['media'] = 'PluginMedia_ActionMedia';
 
+$config['components'] = [
+    'media:library', 'media:tinymce-plugin', 'bootstrap', 'bs-icon'
+];
+
 $config['admin']['assets'] = [
     'js' => [
         'assets/js/init.js'
@@ -15,6 +19,15 @@ $config['admin']['assets'] = [
         //'assets/css/admin.css'
     ]
 ]; 
+/*
+ * Добавление компонентов в админке
+ */
+$config['$root$']['plugin']['admin']['components'] = array_merge(
+    Config::Get('plugin.admin.components'), 
+    $config['components']
+);
+
+$config['library']['per_page'] = 20;
 
 
 // Модуль Image

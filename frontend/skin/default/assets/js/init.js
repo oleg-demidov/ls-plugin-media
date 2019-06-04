@@ -1,5 +1,5 @@
 
 jQuery(document).ready(function($){
-    $('[data-library]').mediaLibrary()
+    $('[data-library]').mediaLibrary();
 });
 

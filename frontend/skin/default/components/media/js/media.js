@@ -30,6 +30,7 @@
             },
             // Классы
             classes: {
+                choose:"choose"
             },
 
             i18n: {
@@ -53,6 +54,8 @@
             
             this._on( this.elements.close, {click:"cancelUpload"});
             
+            this._on( this.element, {click:"choose"});
+            
             if(this.option('isUploadable')){
                 this.elements.close.removeClass('d-none');
                 this.elements.progress.removeClass('d-none');
@@ -63,6 +66,9 @@
             }
         },
         
+        choose: function(){
+            this.element.toggleClass(this.option('classes.choose'));
+        },
         
         onUploadProgress: function(event, precent){
             this.elements.progress.find('.progress-bar')

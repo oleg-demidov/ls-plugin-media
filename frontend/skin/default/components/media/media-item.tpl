@@ -1,7 +1,28 @@
 
-{component_define_params params=[ 'id', 'img', 'alt', 'attributes', 'classes', 'mods' ]}
+{component_define_params params=[ 'oMedia', 'alt', 'attributes', 'classes', 'mods' ]}
 
-<div class="m-1 {$classes} border border-light" data-media-item {cattr list=$attributes} {if $img}style="background-image: url({$img});"{/if}>
+{if $oMedia}
+    {$img = $oMedia->getObject()->getWebPath('100x100crop')}
+    {$attributes['data-id'] = $oMedia->getId()}
+{/if}
+
+
+<div class="m-1 {$classes} position-relative media-item" data-media-item {cattr list=$attributes} {if $img}style="background-image: url({$img});"{/if}>
+    <div class="checker p-1">
+        {component "bs-icon" icon="check" display="s"}
+    </div>
+    
+    {if $oMedia}
+        <div class="media-info flex-column">
+            <div data-media-name>{$oMedia->getName()}</div>
+            <div data-media-type>{$oMedia->getType()}</div>
+            <div>
+                <div data-media-author>{$oMedia->getAuthor()->getLogin()}</div>
+                <div data-media-date>{$oMedia->getDateCreate()}</div>
+            </div>
+            <div data-media-sizes></div>
+        </div>
+    {/if}
     
     <button type="button" class="close media-close text-danger mr-1 d-none" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>

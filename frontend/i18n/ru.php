@@ -3,7 +3,16 @@
 return [
     'library' => [
         'upload' => 'Загрузить',
-        'library' => 'Библиотека'
+        'library' => 'Библиотека',
+        'sort' => [
+            'text' => 'Сортировать:',
+            'date_desc' => 'сначала новые',
+            'date_asc' => 'сначала старые',
+        ],
+        'author' => 'автор',
+        'filter_type' => [
+            'image' => 'изображения'
+        ]
     ],
     'admin' => [
         'nav' => [

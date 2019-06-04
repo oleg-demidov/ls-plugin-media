@@ -24,14 +24,25 @@
             
             // Селекторы
             selectors: {
-                mediaContainer:  '[data-library-medias]',
-                uploader: '[data-uploader]'
+                mediaContainer:     '[data-library-medias]',
+                uploader:           '[data-uploader]',
+                toggleView: '[data-toggle-view]',
+                loadBtn:    "[data-load-btn]",
+                viewField:  "[data-toggle-view] input",
+                sortFields: ".sort-field"
             },
             // Классы
             classes: {
                 media:'[data-media-item]' ,  
-                choose:"choose"
+                
+                view:{
+                    tile:"media-tile",
+                    column:"media-column"
+                },
+                
             },
+            
+            page:1,
 
             i18n: {
             },
@@ -54,23 +65,50 @@
                 mediaContainer: this.elements.mediaContainer
             });
             
-            this._load('load', {}, 'append');
-        },
-        
-        
-        append: function(response){
-            this.elements.mediaContainer.append($(response.html));
+            this.more();
             
-            let medias= this.elements.mediaContainer.find(this.option('classes.media'));
+            this.elements.loadBtn.on('click', this.more.bind(this));
             
-            medias.mediaMedia();
-            
-            medias.on('click', function(event){
-                $(event.currentTarget).toggleClass(this.option('classes.choose'))
+            this.elements.toggleView.find('input').on('change', function(event){
+                this.toggleView( $(event.target).val() );
             }.bind(this));
             
+            this.elements.sortFields.on('change', function(event){
+                this.option('params')[event.currentTarget.name] = $(event.currentTarget).val();
+                this.option('page', 1);
+                this.elements.mediaContainer.empty();
+                this.more();
+            }.bind(this))
         },
         
+        more: function(){
+            this._load('load', {page:this.option('page')}, 'onLoad');
+            this.elements.loadBtn.bsButton('loading');
+        },
+        
+        onLoad: function(response){
+            this.elements.loadBtn.bsButton('loaded');
+            
+            let medias= $(response.html);
+            
+            this.elements.mediaContainer.append(medias);  
+            
+            medias.mediaMedia();         
+            
+            this.elements.loadBtn.bsButton('setCount', response.moreCount);
+            if(response.moreCount <= 0){
+                this.elements.loadBtn.addClass('d-none');
+            }
+            
+            this.option('page', this.option('page') + 1);
+        },
+        
+        toggleView: function(view){
+            view = view || "tile";
+            this.elements.mediaContainer
+                .removeClass(Object.values(this.option('classes.view')).join(' '))
+                .addClass(this.option('classes.view')[view]);
+        },        
         
         selectItem: function(file){
             this.elements.fileInfoEmpty.addClass('d-none');

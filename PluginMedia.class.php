@@ -22,10 +22,9 @@ class PluginMedia extends Plugin
 //            'plugin.wiki.markitup.punkt'
 //        ]);
 ////        
-//        $this->Component_Add('media:media');
-//        $this->Component_Add('media:uploader');
+        $this->Component_Add('media:library');
 
-//        $this->Viewer_AppendScript(Plugin::GetTemplatePath('media'). '/assets/js/init.js');
+        $this->Viewer_AppendScript(Plugin::GetTemplatePath('media'). '/assets/js/init.js');
     }
 
     public function Activate()

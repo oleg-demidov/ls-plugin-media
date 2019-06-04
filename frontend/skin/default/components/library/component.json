@@ -3,14 +3,18 @@
     "version": "1.0.0",
     "dependencies": {
         "media:uploader":"*",
-        "media:media":"*"
+        "media:media":"*",
+        "bs-button":"*"
     },
     "templates": {
         "library": "library.tpl",
-        "file": "file.tpl",
-        "files": "files.tpl"
+        "modal": "modal.tpl"
+        
     },
     "scripts": {
         "library": "js/library.js"
+    },
+    "styles":{
+        "library":"css/library.css"
     }
 }

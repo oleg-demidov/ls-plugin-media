@@ -16,7 +16,8 @@ class PluginMedia_ModuleMedia_EntityMedia extends EntityORM
     );
 
     protected $aRelations = array(
-        'targets' => array(self::RELATION_TYPE_HAS_MANY, 'PluginMedia_ModuleMedia_EntityTarget', 'media_id')
+        'targets' => array(self::RELATION_TYPE_HAS_MANY, 'PluginMedia_ModuleMedia_EntityTarget', 'media_id'),
+        'author' => [self::RELATION_TYPE_BELONGS_TO, 'ModuleUser_EntityUser', 'user_id']
     );
 
     protected function beforeSave()

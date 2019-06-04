@@ -58,15 +58,32 @@ class PluginMedia_ActionMedia_EventMedia extends Event {
         $iPage = (int)getRequestStr('page');
         $iPage = $iPage < 1 ? 1 : $iPage;
 
+        if(getRequestStr('author')){
+            $oUser = $this->User_GetUserByLogin(getRequestStr('author'));
+        }
+        
+        if(!isset($oUser)){
+            $oUser = $this->oUserCurrent;
+        }
+        
+        $aFilter = [
+            'user_id'       => $oUser->getId(),
+            '#page'         => array($iPage, Config::Get('plugin.media.library.per_page'))
+        ];
+        
+        if(getRequest('order')){
+            $aFilter['#order'] = [
+                explode('-', getRequest('order'))[0] => explode('-', getRequest('order'))[1]
+            ];
+        }
+        
         /**
         * Получаем все медиа, созданные пользователем 
         */
-        $aResult = $this->PluginMedia_Media_GetMediaItemsByFilter(array(
-            'user_id'       => $this->oUserCurrent->getId(),
-            '#page'         => array($iPage, 12),
-        ));
+        $aResult = $this->PluginMedia_Media_GetMediaItemsByFilter($aFilter);
         
-        $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, 12, Config::Get('pagination.pages.count'), null);
+        $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, Config::Get('plugin.media.library.per_page'), 
+                Config::Get('pagination.pages.count'), null);
         $aMedias = $aResult['collection'];
 
         $oViewer = $this->Viewer_GetLocalViewer();
@@ -75,6 +92,7 @@ class PluginMedia_ActionMedia_EventMedia extends Event {
         $sTemplate = $oViewer->Fetch('component@media:media.list');
         
         $this->Viewer_AssignAjax('html', $sTemplate);
+        $this->Viewer_AssignAjax('moreCount', $aResult['count'] - (Config::Get('plugin.media.library.per_page')*$iPage));
     }
 
     
@@ -126,59 +144,7 @@ class PluginMedia_ActionMedia_EventMedia extends Event {
        
     }
     
-    public function EventMediaLoadGalleryOld()
-    {
-        /**
-         * Пользователь авторизован?
-         */
-        if (!$this->oUserCurrent) {
-            $this->Message_AddErrorSingle($this->Lang_Get('common.error.need_authorization'), $this->Lang_Get('common.error.error'));
-            return;
-        }
-
-        $sType = getRequestStr('target_type', 'user');
-        $sId = getRequestStr('target_id', $this->oUserCurrent->getId());
-        $iPage = (int)getRequestStr('page');
-        $iPage = $iPage < 1 ? 1 : $iPage;
-
-        $aMediaItems = array();
-        if ($sType) {
-            /**
-             * Получаем медиа для конкретного объекта
-             */
-            if ($sId) {
-                
-                $aMediaItems = $this->Media_GetMediaByTarget($sType, $sId);
-            } 
-        } else {
-            /**
-             * Получаем все медиа, созданные пользователем без учета временных
-             */
-            $aResult = $this->Media_GetMediaItemsByFilter(array(
-                'user_id'       => $this->oUserCurrent->getId(),
-                'mt.target_tmp' => null,
-                '#page'         => array($iPage, 20),
-                '#join'         => array(
-                    'LEFT JOIN ' . Config::Get('db.table.media_target') . ' mt ON ( t.id = mt.media_id and mt.target_tmp IS NOT NULL ) ' => array(),
-                ),
-                '#group'        => 'id',
-                '#order'        => array('id' => 'desc')
-            ));
-            $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, 20, Config::Get('pagination.pages.count'), null);
-            $aMediaItems = $aResult['collection'];
-            $this->Viewer_AssignAjax('pagination', $aPaging);
-        }
-
-        $oViewer = $this->Viewer_GetLocalViewer();
-        $sTemplate = '';
-        foreach ($aMediaItems as $oMediaItem) {
-            $oViewer->Assign('oMediaItem', $oMediaItem);
-            $sTemplate .= $oViewer->Fetch('component@uploader.file');
-        }
-        $this->Viewer_AssignAjax('html', $sTemplate);
-        $this->Viewer_AssignAjax('count_loaded', count($aMediaItems));
-        $this->Viewer_AssignAjax('page', count($aMediaItems) > 0 ? $iPage + 1 : $iPage);
-    }
+    
     
     public function EventMediaSubmitInsert()
     {

@@ -1,0 +1,10 @@
+{
+    "name": "tinymce-plugin",
+    "version": "1.0.0",
+    "dependencies": {
+        
+    },
+    "scripts": {
+        "plugin": "js/media.plugin.js"
+    }  
+}
