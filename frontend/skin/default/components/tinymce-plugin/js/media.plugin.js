@@ -12,7 +12,7 @@ jQuery(document).ready(function($){
             // Вставка медиа-объектов
             editor.addButton('lsmedia', {
                 icon: 'image',
-                tooltip: 'Вставить медиа',
+                tooltip: ls.lang.get('plugin.media.library.button.tooltip'),
                 onclick: function() {
                     $('#medialibrary').modal('show')
                 }

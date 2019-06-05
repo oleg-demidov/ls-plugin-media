@@ -18,10 +18,10 @@ class PluginMedia extends Plugin
     
     public function Init()
     {
-//        $this->Lang_AddLangJs([
-//            'plugin.wiki.markitup.punkt'
-//        ]);
-////        
+        $this->Lang_AddLangJs([
+            'plugin.media.library.button.tooltip'
+        ]);
+
         $this->Component_Add('media:library');
         $this->Component_Add('media:tinymce-plugin');
 

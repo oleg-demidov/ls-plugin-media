@@ -15,10 +15,19 @@
     {if $oMedia}
         <div class="media-info flex-column">
             <div data-media-name>{$oMedia->getName()}</div>
-            <div data-media-type>{$oMedia->getType()}</div>
-            <div>
+            <div data-media-type>{*{lang "plugin.media.library.type.{$oMedia->getType()}"}*}</div>
+            <div class="d-flex">
+                <div>{$aLang.plugin.media.media.added}:</div>
+                <div data-media-date>{$oMedia->getDateCreateFormat()}</div>
                 <div data-media-author>{$oMedia->getAuthor()->getLogin()}</div>
-                <div data-media-date>{$oMedia->getDateCreate()}</div>
+            </div>
+            <div class="d-flex justify-content-around">
+                <div class="col-8">размер</div>
+                <div class="col-4">
+                    {component "bs-button" 
+                        bmods="success" 
+                        text=$aLang.plugin.media.library.button_select.text}
+                </div>
             </div>
             <div data-media-sizes></div>
         </div>

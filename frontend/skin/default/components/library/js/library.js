@@ -89,11 +89,19 @@
         onLoad: function(response){
             this.elements.loadBtn.bsButton('loaded');
             
-            let medias= $(response.html);
+            let medias = $(response.html);
             
             this.elements.mediaContainer.append(medias);  
             
-            medias.mediaMedia();         
+            medias.mediaMedia();      
+            
+            medias.on('click', function(event){
+                $(event.currentTarget).mediaMedia('select');
+                this.elements.mediaContainer
+                    .find(this.option('classes.media'))
+                    .not(event.currentTarget)
+                    .mediaMedia('deselect');
+            }.bind(this))
             
             this.elements.loadBtn.bsButton('setCount', response.moreCount);
             if(response.moreCount <= 0){

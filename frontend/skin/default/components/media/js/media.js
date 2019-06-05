@@ -26,18 +26,22 @@
             selectors: {
                 progress:   ".progress",
                 close:      ".media-close",
-                mediaModal: "@[data-media-modal]"
+                mediaModal: "@[data-media-modal]",
+                info:       ".media-info"
             },
             // Классы
             classes: {
-                choose:"choose"
+                choose:"choose",
+                viewTile:".media-tile"
             },
 
             i18n: {
             },
             isUploadable:false,
             // Доп-ые параметры передаваемые в аякс запросах
-            params: {}
+            params: {},
+            
+            onChoose: null
 
         },
 
@@ -54,8 +58,6 @@
             
             this._on( this.elements.close, {click:"cancelUpload"});
             
-            this._on( this.element, {click:"choose"});
-            
             if(this.option('isUploadable')){
                 this.elements.close.removeClass('d-none');
                 this.elements.progress.removeClass('d-none');
@@ -66,8 +68,24 @@
             }
         },
         
-        choose: function(){
-            this.element.toggleClass(this.option('classes.choose'));
+        select: function(){
+            this.element.addClass(this.option('classes.choose'));
+            this.showInfo();
+        },
+        
+        deselect: function(){
+            this.element.removeClass(this.option('classes.choose'));
+            if(this.element.closest(this.option('classes.viewTile'))){
+                this.hideInfo();
+            }
+        },
+        
+        showInfo: function(){
+            this.elements.info.show();
+        },
+        
+        hideInfo: function(){
+            this.elements.info.hide();
         },
         
         onUploadProgress: function(event, precent){

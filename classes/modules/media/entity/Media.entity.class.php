@@ -128,4 +128,9 @@ class PluginMedia_ModuleMedia_EntityMedia extends EntityORM
     public function getWebPath($bWithType = false) {
         return $this->Fs_GetPath(parent::getPath(), $bWithType );
     }
+    
+    public function getDateCreateFormat($format = 'd.m.y') {
+        $date = new DateTime($this->getDateCreate());
+        return $date->format($format);
+    }
 }

@@ -12,6 +12,15 @@ return [
         'author' => 'автор',
         'filter_type' => [
             'image' => 'изображения'
+        ],
+        'modal' => [
+            'header' => 'Медиафайлы'
+        ],
+        'button' => [
+            'tooltip' => 'Вставить медиа'
+        ],
+        'button_select' => [
+            'text' => 'Вставить'
         ]
     ],
     'admin' => [
@@ -23,7 +32,12 @@ return [
         'notices' => [
             'error_validate_exists' => 'Уже есть в базе'
             
-        ]
+        ],
+        'type' => [
+            'image' => 'Картинка',
+            'video' => 'Видео'
+        ],
+        'added' => 'Добавлено'
     ],
     'uploader' => [
         'label' => "Загрузить",
