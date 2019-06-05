@@ -24,32 +24,32 @@ class PluginMedia_ActionMedia_EventMedia extends Event {
     
     
 
-    public function EventMediaRemoveFile()
-    {
-        /**
-         * Пользователь авторизован?
-         */
-        if (!$this->oUserCurrent) {
-            $this->Message_AddErrorSingle($this->Lang_Get('common.error.need_authorization'), $this->Lang_Get('common.error.error'));
-            return;
-        }
-        $sId = getRequestStr('id');
-        if (!$oMedia = $this->Media_GetMediaById($sId)) {
-            return $this->EventErrorDebug();
-        }
-        
-        if ($aMediaTargets = $this->Media_GetTargetItemsByFilter(['media_id' => $oMedia->getId()])) {
-            foreach ($aMediaTargets as $oMediaTarget) {
-                $oMediaTarget->Delete();
-            }
-        }
-        
-        if (!$oMedia->Delete()) {
-            $this->Message_AddErrorSingle(is_string($res) ? $res : $this->Lang_Get('common.error.system.base'));
-        }else{
-            $this->Message_AddNotice($this->Lang_Get('common.success.remove'));
-        }
-    }
+//    public function EventMediaRemoveFile()
+//    {
+//        /**
+//         * Пользователь авторизован?
+//         */
+//        if (!$this->oUserCurrent) {
+//            $this->Message_AddErrorSingle($this->Lang_Get('common.error.need_authorization'), $this->Lang_Get('common.error.error'));
+//            return;
+//        }
+//        $sId = getRequestStr('id');
+//        if (!$oMedia = //$this->Media_GetMediaById($sId)) {
+//            return $this->EventErrorDebug();
+//        }
+//        
+//        if ($aMediaTargets = //$this->Media_GetTargetItemsByFilter(['media_id' => $oMedia->getId()])) {
+//            foreach ($aMediaTargets as $oMediaTarget) {
+//                $oMediaTarget->Delete();
+//            }
+//        }
+//        
+//        if (!$oMedia->Delete()) {
+//            $this->Message_AddErrorSingle(is_string($res) ? $res : $this->Lang_Get('common.error.system.base'));
+//        }else{
+//            $this->Message_AddNotice($this->Lang_Get('common.success.remove'));
+//        }
+//    }
 
 
     public function EventLoad()
@@ -146,35 +146,35 @@ class PluginMedia_ActionMedia_EventMedia extends Event {
     
     
     
-    public function EventMediaSubmitInsert()
-    {
-        $aIds = array(0);
-        foreach ((array)getRequest('ids') as $iId) {
-            $aIds[] = (int)$iId;
-        }
-
-        if (!($aMediaItems = $this->Media_GetAllowMediaItemsById($aIds))) {
-            $this->Message_AddError($this->Lang_Get('media.error.need_choose_items'));
-            return false;
-        }
-
-        $aParams = array(
-            'align'        => getRequestStr('align'),
-            'size'         => getRequestStr('size', '500x'),
-            'relative_web' => true
-        );
-        /**
-         * Если изображений несколько, то генерируем идентификатор группы для лайтбокса
-         */
-        if (count($aMediaItems) > 1) {
-            $aParams['lbx_group'] = rand(1, 100);
-        }
-
-        $sTextResult = '';
-        foreach ($aMediaItems as $oMedia) {
-            $sTextResult .= $this->Media_BuildCodeForEditor($oMedia, $aParams) . "\r\n";
-        }
-        $this->Viewer_AssignAjax('sTextResult', $sTextResult);
-    }
+//    public function EventMediaSubmitInsert()
+//    {
+//        $aIds = array(0);
+//        foreach ((array)getRequest('ids') as $iId) {
+//            $aIds[] = (int)$iId;
+//        }
+//
+//        if (!($aMediaItems = //$this->Media_GetAllowMediaItemsById($aIds))) {
+//            $this->Message_AddError($this->Lang_Get('media.error.need_choose_items'));
+//            return false;
+//        }
+//
+//        $aParams = array(
+//            'align'        => getRequestStr('align'),
+//            'size'         => getRequestStr('size', '500x'),
+//            'relative_web' => true
+//        );
+//        /**
+//         * Если изображений несколько, то генерируем идентификатор группы для лайтбокса
+//         */
+//        if (count($aMediaItems) > 1) {
+//            $aParams['lbx_group'] = rand(1, 100);
+//        }
+//
+//        $sTextResult = '';
+//        foreach ($aMediaItems as $oMedia) {
+//            $sTextResult .= //$this->Media_BuildCodeForEditor($oMedia, $aParams) . "\r\n";
+//        }
+//        $this->Viewer_AssignAjax('sTextResult', $sTextResult);
+//    }
 
 }

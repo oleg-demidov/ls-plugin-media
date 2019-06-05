@@ -23,6 +23,7 @@ class PluginMedia extends Plugin
 //        ]);
 ////        
         $this->Component_Add('media:library');
+        $this->Component_Add('media:tinymce-plugin');
 
         $this->Viewer_AppendScript(Plugin::GetTemplatePath('media'). '/assets/js/init.js');
     }

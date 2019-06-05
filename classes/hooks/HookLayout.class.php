@@ -19,8 +19,10 @@ class PluginMedia_HookLayout extends Hook{
      * Добавляем в главное меню админки свой раздел с подпунктами
      */
     public function AddLibrary()
-    {
-        $this->Viewer_Assign('oUser', $this->User_GetUserCurrent());
-        return $this->Viewer_Fetch('component@media:library.modal');
+    { 
+        if($oUser = $this->User_GetUserCurrent()){   
+            $this->Viewer_Assign('oUser', $oUser);
+            return $this->Viewer_Fetch('component@media:library.modal');
+        }
     }
 }
