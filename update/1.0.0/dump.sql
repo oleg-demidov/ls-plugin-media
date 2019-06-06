@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: localhost
--- Время создания: Июн 01 2019 г., 17:04
--- Версия сервера: 5.7.25-0ubuntu0.16.04.2
--- Версия PHP: 7.0.33-1+ubuntu16.04.1+deb.sury.org+1
+-- Время создания: Июн 06 2019 г., 09:07
+-- Версия сервера: 5.7.26-0ubuntu0.16.04.1
+-- Версия PHP: 7.0.33-8+ubuntu16.04.1+deb.sury.org+1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- База данных: `fend`
+-- База данных: `pdd`
 --
 
 -- --------------------------------------------------------
@@ -27,39 +27,29 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `prefix_media` (
-  `id` int(11) UNSIGNED NOT NULL,
-  `user_id` int(11) UNSIGNED DEFAULT NULL,
-  `type` varchar(20) NOT NULL,
-  `path` varchar(500) NOT NULL,
-  `name` varchar(500) NOT NULL,
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `user_id` bigint(20) UNSIGNED NOT NULL,
+  `type` enum('image','video','doc') COLLATE utf8_bin NOT NULL DEFAULT 'image',
+  `name` varchar(200) COLLATE utf8_bin NOT NULL,
+  `path` varchar(500) COLLATE utf8_bin NOT NULL,
   `size` int(11) NOT NULL,
-  `date_create` datetime NOT NULL,
-  `data` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `data` text COLLATE utf8_bin NOT NULL,
+  `date_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
---
--- Дамп данных таблицы `prefix_media`
---
-
---------------------------------------------------------
+-- --------------------------------------------------------
 
 --
 -- Структура таблицы `prefix_media_target`
 --
 
 CREATE TABLE `prefix_media_target` (
-  `id` int(11) UNSIGNED NOT NULL,
-  `media_id` int(11) UNSIGNED NOT NULL,
-  `target_id` int(11) DEFAULT NULL,
-  `target_type` varchar(50) NOT NULL,
-  `date_create` datetime NOT NULL,
-  `data` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Дамп данных таблицы `prefix_media_target`
---
-
+  `id` int(11) NOT NULL,
+  `media_id` bigint(20) UNSIGNED NOT NULL,
+  `target_id` bigint(20) UNSIGNED NOT NULL,
+  `targtet_type` varchar(50) COLLATE utf8_bin NOT NULL,
+  `date_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
 -- Индексы сохранённых таблиц
@@ -72,8 +62,8 @@ ALTER TABLE `prefix_media`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`),
   ADD KEY `type` (`type`),
-  ADD KEY `file_size` (`size`),
-  ADD KEY `date_create` (`date_create`);
+  ADD KEY `date_create` (`date_create`),
+  ADD KEY `size` (`size`);
 
 --
 -- Индексы таблицы `prefix_media_target`
@@ -82,7 +72,7 @@ ALTER TABLE `prefix_media_target`
   ADD PRIMARY KEY (`id`),
   ADD KEY `media_id` (`media_id`),
   ADD KEY `target_id` (`target_id`),
-  ADD KEY `target_type` (`target_type`),
+  ADD KEY `targtet_type` (`targtet_type`),
   ADD KEY `date_create` (`date_create`);
 
 --
@@ -93,12 +83,12 @@ ALTER TABLE `prefix_media_target`
 -- AUTO_INCREMENT для таблицы `prefix_media`
 --
 ALTER TABLE `prefix_media`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT для таблицы `prefix_media_target`
 --
 ALTER TABLE `prefix_media_target`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
