@@ -116,6 +116,11 @@
             this.elements.mediaContainer
                 .removeClass(Object.values(this.option('classes.view')).join(' '))
                 .addClass(this.option('classes.view')[view]);
+            if(view == "column"){
+                this.elements.mediaContainer
+                    .find(this.option('classes.media'))
+                    .mediaMedia('showInfo');
+            }
         },        
         
         selectItem: function(file){

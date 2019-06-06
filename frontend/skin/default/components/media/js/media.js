@@ -75,7 +75,7 @@
         
         deselect: function(){
             this.element.removeClass(this.option('classes.choose'));
-            if(this.element.closest(this.option('classes.viewTile'))){
+            if(this.element.closest(this.option('classes.viewTile')).length){
                 this.hideInfo();
             }
         },

@@ -13,23 +13,24 @@
     </div>
     
     {if $oMedia}
-        <div class="media-info flex-column">
-            <div data-media-name>{$oMedia->getName()}</div>
-            <div data-media-type>{*{lang "plugin.media.library.type.{$oMedia->getType()}"}*}</div>
-            <div class="d-flex">
-                <div>{$aLang.plugin.media.media.added}:</div>
-                <div data-media-date>{$oMedia->getDateCreateFormat()}</div>
-                <div data-media-author>{$oMedia->getAuthor()->getLogin()}</div>
-            </div>
-            <div class="d-flex justify-content-around">
-                <div class="col-8">размер</div>
-                <div class="col-4">
-                    {component "bs-button" 
-                        bmods="success" 
-                        text=$aLang.plugin.media.library.button_select.text}
+        <div class="media-info">
+            <div class="d-flex flex-column p-1 w-100">
+                <div data-media-name>{$oMedia->getName()}</div>
+                <div data-media-type>{*{lang "plugin.media.library.type.{$oMedia->getType()}"}*}</div>
+                <div class="d-flex justify-content-between">
+                    <div class="text-muted">{$aLang.plugin.media.media.added}:</div>
+                    <div  class="pl-2" data-media-author><em>{$oMedia->getAuthor()->getLogin()}</em></div>
+                    <div  class="pl-2" data-media-date><small>{$oMedia->getDateCreateFormat()}</small></div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <div>размер</div>
+                    <div class="pl-2 align-self-end">
+                        {component "bs-button" 
+                            bmods="success" 
+                            text=$aLang.plugin.media.library.button_select.text}
+                    </div>
                 </div>
             </div>
-            <div data-media-sizes></div>
         </div>
     {/if}
     
