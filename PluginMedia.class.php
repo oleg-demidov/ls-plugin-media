@@ -19,7 +19,8 @@ class PluginMedia extends Plugin
     public function Init()
     {
         $this->Lang_AddLangJs([
-            'plugin.media.library.button.tooltip'
+            'plugin.media.library.button.tooltip',
+            'plugin.media.media.remove'
         ]);
 
         $this->Component_Add('media:library');

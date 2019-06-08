@@ -19,4 +19,8 @@ class PluginMedia_ModuleMedia_EntityImage extends Entity
             return null;
         }
     }
+    
+    public function getSizes() {
+        return $this->PluginMedia_Media_GetImageSizes();
+    }
 }

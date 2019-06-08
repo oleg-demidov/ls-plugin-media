@@ -20,6 +20,7 @@
             urls: {
                 // Подгрузка файлов
                 load: aRouter['media'] + 'load/', 
+               
             },
             
             // Селекторы
@@ -62,7 +63,11 @@
             this._super();
             
             this.elements.uploader.mediaUploader({
-                mediaContainer: this.elements.mediaContainer
+                onUploadSuccess: function(event, data){
+                    let medias = $(data.response.html);
+                    medias.addClass('border-success');
+                    this.addMedia(medias, true);
+                }.bind(this)
             });
             
             this.more();
@@ -90,18 +95,8 @@
             this.elements.loadBtn.bsButton('loaded');
             
             let medias = $(response.html);
-            
-            this.elements.mediaContainer.append(medias);  
-            
-            medias.mediaMedia();      
-            
-            medias.on('click', function(event){
-                $(event.currentTarget).mediaMedia('select');
-                this.elements.mediaContainer
-                    .find(this.option('classes.media'))
-                    .not(event.currentTarget)
-                    .mediaMedia('deselect');
-            }.bind(this))
+                        
+            this.addMedia(medias);
             
             this.elements.loadBtn.bsButton('setCount', response.moreCount);
             if(response.moreCount <= 0){
@@ -111,72 +106,35 @@
             this.option('page', this.option('page') + 1);
         },
         
+        addMedia: function(medias, prepend = false){
+                        
+            if(prepend){
+                this.elements.mediaContainer.prepend(medias);
+            }else{
+                this.elements.mediaContainer.append(medias);
+            }
+            
+            medias.mediaMedia();
+            
+            this.attachEventsMedia(medias)
+        },
+        
+        attachEventsMedia: function(medias){
+            medias.on('click', function(event){
+                $(event.currentTarget).mediaMedia('select');
+                this.elements.mediaContainer
+                    .find(this.option('classes.media'))
+                    .not(event.currentTarget)
+                    .mediaMedia('deselect');
+            }.bind(this))
+        },
+        
         toggleView: function(view){
             view = view || "tile";
             this.elements.mediaContainer
                 .removeClass(Object.values(this.option('classes.view')).join(' '))
                 .addClass(this.option('classes.view')[view]);
-            if(view == "column"){
-                this.elements.mediaContainer
-                    .find(this.option('classes.media'))
-                    .mediaMedia('showInfo');
-            }
-        },        
-        
-        selectItem: function(file){
-            this.elements.fileInfoEmpty.addClass('d-none');
-            this.elements.info.removeClass('d-none');
             
-            this.elements.items.removeClass('border-1  p-1').addClass('p-2');
-            file.addClass('border-1 p-1').removeClass('p-2');
-            
-            $.each(this.option('infoList'), function(name, selector){
-                this.elements.info.find(selector).html(file.data(name))
-            }.bind(this));
-            
-            //let sel = this.addSizesSelect(file.data('mediaSizes'));
-            
-            this.option('selectedItem', file);
-            
-        },
-        
-        getSelectSize: function(){
-            if(this.option('select') !== null){
-                return this.option('select').val();
-            }
-        },
-        
-        addSizesSelect: function(sizes){
-            let sel = $(document.createElement('select')).attr('name', 'sizes');
-            
-            $.each(sizes, function(i, size){
-                let opt = $(document.createElement('option'));
-                let sSize = size.w + "x" + (size.h !== null?size.h:"") + (size.crop?"crop":"");
-                opt.val(sSize).text(sSize);
-                sel.append(opt);
-            })
-            
-            this.elements.info.find(this.option('infoList.sizes')).html(sel);
-            
-            this.option('select', sel);
-            
-            return sel;
-        },
-        
-        getSelectItem: function(){
-            if(!this.option('selectedItem')){
-                return null;
-            }
-            return this.option('selectedItem').clone();
-        },
-        
-        reset: function(){
-            this.elements.fileInfoEmpty.removeClass('d-none');
-            this.elements.info.addClass('d-none');
-        },
-        
-        onClickRemove: function(){
-            this._load('remove', {id:$(this.option('infoList.id')).text()}, "loadFiles");
         }
 
         

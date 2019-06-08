@@ -8,26 +8,42 @@
 
 
 <div class="m-1 {$classes} position-relative media-item" data-media-item {cattr list=$attributes} {if $img}style="background-image: url({$img});"{/if}>
-    <div class="checker p-1">
-        {component "bs-icon" icon="check" display="s"}
-    </div>
-    
+        
     {if $oMedia}
         <div class="media-info">
-            <div class="d-flex flex-column p-1 w-100">
-                <div data-media-name>{$oMedia->getName()}</div>
-                <div data-media-type>{*{lang "plugin.media.library.type.{$oMedia->getType()}"}*}</div>
-                <div class="d-flex justify-content-between">
+            <div class="d-flex flex-column p-1 w-100 justify-content-between">
+                    <div data-media-name class="text-truncate">{$oMedia->getName()}</div>
+                    
+                <div class="d-flex justify-content-between text-truncate">
                     <div class="text-muted">{$aLang.plugin.media.media.added}:</div>
                     <div  class="pl-2" data-media-author><em>{$oMedia->getAuthor()->getLogin()}</em></div>
                     <div  class="pl-2" data-media-date><small>{$oMedia->getDateCreateFormat()}</small></div>
                 </div>
-                <div class="d-flex justify-content-between">
-                    <div>размер</div>
-                    <div class="pl-2 align-self-end">
+                <div class="d-flex justify-content-end">
+                    
+                    {*<div>
+                        {if $oMedia->getType() == "image"}
+                            {$items = []}
+                            {foreach $oMedia->getObject()->getSizes() as $sSize}
+                                {$items[] = [ text => $sSize, value => $sSize]}
+                            {/foreach}
+                            {component "bs-form.select" items = $items classesGroup= "mb-0"}
+                        {/if}
+                    </div>*}
+                    <div class="align-self-end">
                         {component "bs-button" 
-                            bmods="success" 
-                            text=$aLang.plugin.media.library.button_select.text}
+                            icon        = "edit"
+                            attributes  = ['data-edit' => true]
+                            bmods       = "outline-primary"}
+                            
+                        {component "bs-button" 
+                            icon        = "trash"
+                            attributes  = ['data-remove' => true]
+                            bmods       = "outline-danger"}
+                            
+                        {component "bs-button" 
+                            bmods   = "success" 
+                            text    = $aLang.plugin.media.library.button_select.text}
                     </div>
                 </div>
             </div>

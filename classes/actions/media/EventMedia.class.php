@@ -24,32 +24,32 @@ class PluginMedia_ActionMedia_EventMedia extends Event {
     
     
 
-//    public function EventMediaRemoveFile()
-//    {
-//        /**
-//         * Пользователь авторизован?
-//         */
-//        if (!$this->oUserCurrent) {
-//            $this->Message_AddErrorSingle($this->Lang_Get('common.error.need_authorization'), $this->Lang_Get('common.error.error'));
-//            return;
-//        }
-//        $sId = getRequestStr('id');
-//        if (!$oMedia = //$this->Media_GetMediaById($sId)) {
-//            return $this->EventErrorDebug();
-//        }
-//        
-//        if ($aMediaTargets = //$this->Media_GetTargetItemsByFilter(['media_id' => $oMedia->getId()])) {
-//            foreach ($aMediaTargets as $oMediaTarget) {
-//                $oMediaTarget->Delete();
-//            }
-//        }
-//        
-//        if (!$oMedia->Delete()) {
-//            $this->Message_AddErrorSingle(is_string($res) ? $res : $this->Lang_Get('common.error.system.base'));
-//        }else{
-//            $this->Message_AddNotice($this->Lang_Get('common.success.remove'));
-//        }
-//    }
+    public function EventRemove()
+    {
+        
+        $sId = getRequestStr('id');
+        if (!$oMedia = $this->PluginMedia_Media_GetMediaById($sId)) {
+            $this->Message_AddError($this->Lang('common.error'));
+            return;
+        }
+        
+        if($oMedia->getAuthor()->getId() != $this->oUserCurrent->getId()){
+            $this->Message_AddError($this->Lang('plugin.media.media.notices.error_remove_access'));
+            return;
+        }
+        
+        if ($aMediaTargets = $this->PluginMedia_Media_GetTargetItemsByFilter(['media_id' => $oMedia->getId()])) {
+            foreach ($aMediaTargets as $oMediaTarget) {
+                $oMediaTarget->Delete();
+            }
+        }
+        
+        if (!$oMedia->Delete()) {
+            $this->Message_AddErrorSingle(is_string($res) ? $res : $this->Lang_Get('common.error.system.base'));
+        }else{
+            $this->Message_AddNotice($this->Lang_Get('common.success.remove'));
+        }
+    }
 
 
     public function EventLoad()
@@ -68,7 +68,8 @@ class PluginMedia_ActionMedia_EventMedia extends Event {
         
         $aFilter = [
             'user_id'       => $oUser->getId(),
-            '#page'         => array($iPage, Config::Get('plugin.media.library.per_page'))
+            '#page'         => array($iPage, Config::Get('plugin.media.library.per_page')),
+            '#order'        => ['date_create' => 'desc']
         ];
         
         if(getRequest('order')){
@@ -94,6 +95,7 @@ class PluginMedia_ActionMedia_EventMedia extends Event {
         $this->Viewer_AssignAjax('html', $sTemplate);
         $this->Viewer_AssignAjax('moreCount', $aResult['count'] - (Config::Get('plugin.media.library.per_page')*$iPage));
     }
+    
 
     
     public function EventUpload()
@@ -134,8 +136,10 @@ class PluginMedia_ActionMedia_EventMedia extends Event {
          * Загружаем
          */       
         if ($mResult = $this->PluginMedia_Media_Upload($oMedia) and is_object($mResult)) {
-            $this->Viewer_AssignAjax('id', $mResult->getId());
-            $this->Viewer_AssignAjax('path', $mResult->getObject()->getWebPath('100x100crop'));
+            $oViewer = $this->Viewer_GetLocalViewer();
+            $oViewer->Assign('oMedia', $mResult, true);
+            $sTemplate = $oViewer->Fetch('component@media:media.item');
+            $this->Viewer_AssignAjax('html', $sTemplate);
             
         } else {
             $this->Message_AddError(is_string($mResult) ? $mResult : $this->Lang_Get('common.error.system.base'),

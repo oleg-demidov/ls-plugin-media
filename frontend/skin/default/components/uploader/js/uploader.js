@@ -28,11 +28,9 @@
                 // Инпут
                 upload_input: '[data-file-input]',
                 
-                mediaTpl: ".media-tpl"
+                fileTpl: "[data-file-tpl]"
             },
 
-            mediaContainer:$(),
-            
             // Настройки загрузчика
             fileupload : {
                 
@@ -88,7 +86,6 @@
                 }.bind(this),
             });
             
-//            console.log(this.option( 'fileupload' ))
             this.elements.upload_zone.dmUploader( this.option( 'fileupload' ) );
            
         },
@@ -96,20 +93,23 @@
         /**
          * 
          */
-
-        onNewFile: function( id, file ) {
-            let media = this.elements.mediaTpl.clone();
+        onNewFile: function( id, fileData ) {
+            let file = this.elements.fileTpl.clone();
             
-            media.prependTo(this.option('mediaContainer')).mediaMedia({
-                isUploadable:true,
-                id:id,
-                onCancelUpload: function(event, id){
-                    this.elements.upload_zone.dmUploader('cancel', id);
+            this.elements.upload_zone.append(file);
+            
+            file.mediaFile({
+                data:fileData,
+                onCancelUpload: function(){
+                    this.elements.upload_zone.dmUploader( 'cancel' );
                 }.bind(this)
             });
             
-            this.option('uploadableFiles')[id] = media;
+            file.removeClass('d-none');
             
+            this.option('uploadableFiles')[id] = file;
+            
+            this._trigger('onNewFile', null, file );
         },
 
         /**
@@ -117,18 +117,19 @@
          */
         onUploadProgress: function(  id, percent) {
             if(this.option('uploadableFiles')[id] !== undefined){
-                this.option('uploadableFiles')[id].trigger('onUploadProgress', percent);
+                this.option('uploadableFiles')[id].mediaFile('setProgress', percent);
             }
         },
-
-        
 
         /**
          * 
          */
         onUploadSuccess: function( id, data ) {
             if(this.option('uploadableFiles')[id] !== undefined){
-                this.option('uploadableFiles')[id].trigger('onUploadSuccess',data );
+                this.option('uploadableFiles')[id].mediaFile('successUpload');
+                this._trigger('onUploadSuccess', null, {
+                    response: data,
+                    file: this.option('uploadableFiles')[id].mediaFile('option', 'data') });
             }
         },
 

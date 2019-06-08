@@ -24,3 +24,18 @@
     top: -999px;
     left: -999px;
 }
+
+[data-file-tpl] [data-progress-info]{
+    
+}
+.progress-info{
+     top:0;
+}
+
+.file-upload{
+    height: 24px;
+}
+
+.progress-container{
+   
+}

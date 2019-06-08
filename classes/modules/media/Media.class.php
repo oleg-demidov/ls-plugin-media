@@ -452,4 +452,19 @@ class PluginMedia_ModuleMedia extends ModuleORM
         return $iMaxSize>$iMaxSize2?$iMaxSize2:$iMaxSize;
     }
     
+    
+    public function GetImageSizes() {
+        $aSizesConfig = Config::Get('plugin.media.image.sizes');
+        
+        $aSizes = [];
+        foreach ($aSizesConfig as $aSizeConfig) {
+            $aSizes[] = $this->GetImageSize($aSizeConfig);
+        }
+        
+        return $aSizes;
+    }
+    
+    public function GetImageSize($aSize) {
+        return $aSize['w'] . 'x' . $aSize['h'] . ($aSize['crop']?'crop':'');
+    }
 }

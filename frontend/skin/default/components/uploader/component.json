@@ -5,11 +5,13 @@
         
     },
     "templates": {
-        "uploader":"uploader.tpl"
+        "uploader":"uploader.tpl",
+        "file": "file.tpl"
     },
     "scripts": {
         "uploader": "js/uploader.js",
-        "fileuploader":"js/jquery.dm-uploader.js"
+        "fileuploader":"js/jquery.dm-uploader.js",
+        "file": "js/file.js"
     },
     "styles":{
         "uploader":"css/uploader.css"

@@ -30,14 +30,15 @@ return [
     ],
     'media' => [
         'notices' => [
-            'error_validate_exists' => 'Уже есть в базе'
-            
+            'error_validate_exists' => 'Уже есть в базе',
+            'error_remove_access' => 'Вы не можете удалить этот файл'
         ],
         'type' => [
             'image' => 'Картинка',
             'video' => 'Видео'
         ],
-        'added' => 'Добавлено'
+        'added' => 'Добавлено',
+        'remove' => 'Вы действительно хотите удалить %%name%%?'
     ],
     'uploader' => [
         'label' => "Загрузить",

@@ -60,6 +60,11 @@ $config['image']['sizes'] = array(  // список размеров, котор
         'h'    => null,
         'crop' => false,
     ),
+    array(
+        'w'    => 100,
+        'h'    => 100,
+        'crop' => true,
+    ),
     
 );
 $config['image']['preview']['sizes'] = array(  // список размеров, которые необходимо делать при создании превью
