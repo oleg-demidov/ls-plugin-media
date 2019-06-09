@@ -24,7 +24,8 @@
             {$aLang.plugin.media.library.sort.text} 
         </div>
         <div class="align-self-center"> 
-            {component "bs-form.select" 
+            {component "bs-form.select"
+                prepend = {component "bs-icon" icon="sort"}
                 name = "order"
                 classesGroup = "mb-0"
                 classes = "sort-field"
