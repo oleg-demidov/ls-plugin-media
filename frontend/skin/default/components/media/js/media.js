@@ -73,6 +73,8 @@
             }else{
                 this.option('id', this.element.data('id'));
             }
+            
+            this._on(this.element, {click:"toggleSelect"});
         },
         
         select: function(){
@@ -81,6 +83,14 @@
         
         deselect: function(){
             this.element.removeClass(this.option('classes.choose'));
+        },
+        
+        isSelect: function(){
+            return this.element.hasClass(this.option('classes.choose'))
+        },
+        
+        toggleSelect: function(){
+            this.element.toggleClass(this.option('classes.choose'));
         },
         
         remove: function(){

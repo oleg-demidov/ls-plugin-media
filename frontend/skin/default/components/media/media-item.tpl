@@ -21,28 +21,20 @@
                 </div>
                 <div class="d-flex justify-content-end">
                     
-                    {*<div>
-                        {if $oMedia->getType() == "image"}
-                            {$items = []}
-                            {foreach $oMedia->getObject()->getSizes() as $sSize}
-                                {$items[] = [ text => $sSize, value => $sSize]}
-                            {/foreach}
-                            {component "bs-form.select" items = $items classesGroup= "mb-0"}
-                        {/if}
-                    </div>*}
+                    
                     <div class="align-self-end">
-                        {component "bs-button" 
+                        {*{component "bs-button" 
                             icon        = "edit"
                             attributes  = ['data-edit' => true]
-                            bmods       = "outline-primary"}
+                            bmods       = "outline-primary"}*}
                             
                         {component "bs-button" 
                             icon        = "trash"
                             attributes  = ['data-remove' => true]
-                            bmods       = "outline-danger"}
+                            bmods       = "outline-danger sm"}
                             
                         {component "bs-button" 
-                            bmods   = "success" 
+                            bmods   = "outline-success sm" 
                             text    = $aLang.plugin.media.library.button_select.text}
                     </div>
                 </div>

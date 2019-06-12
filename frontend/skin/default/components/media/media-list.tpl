@@ -5,4 +5,7 @@
     {component "media:media.item" oMedia = $oMedia}
 {/foreach}
 
+{if !$aMedias}
+    {component "blankslate" classes="w-100 mt-1" text=$aLang.plugin.media.library.blankslate}
+{/if}
 

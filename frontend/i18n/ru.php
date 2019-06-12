@@ -21,7 +21,23 @@ return [
         ],
         'button_select' => [
             'text' => 'Вставить'
-        ]
+        ],
+        'button_clear' => [
+            'text' => 'Очистить'
+        ],
+        'button_load' => [
+            'text' => 'Подгрузить'
+        ],
+        'button_insert' => [
+            'text' => 'Вставить'
+        ],
+        'types' => [
+            'all' => 'Все',
+            'images' => 'Картинки',
+            'video' => 'Видео',
+            'docs' => 'Документы'
+        ],
+        'blankslate' => 'Медиафайлов нет'
     ],
     'admin' => [
         'nav' => [

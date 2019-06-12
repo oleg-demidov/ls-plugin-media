@@ -72,6 +72,10 @@ class PluginMedia_ActionMedia_EventMedia extends Event {
             '#order'        => ['date_create' => 'desc']
         ];
         
+        if(getRequestStr('type') and getRequestStr('type') != 'all'){
+            $aFilter['type'] =  getRequestStr('type');
+        }
+        
         if(getRequest('order')){
             $aFilter['#order'] = [
                 explode('-', getRequest('order'))[0] => explode('-', getRequest('order'))[1]

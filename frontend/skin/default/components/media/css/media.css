@@ -29,9 +29,6 @@
     display: none;
 }
 
-.media-tile [data-media-item].choose .media-info{
-    display: flex;
-}
 
 .media-column {
     flex-direction:column;

@@ -10,8 +10,8 @@
     
     {component "media:uploader" }
     
-    <form class="d-flex justify-content-start mt-2" data-sort-form> 
-        <div class="align-self-center"> 
+    <form class="d-flex justify-content-start mt-2 flex-wrap" data-sort-form> 
+        <div class="align-self-center m-1"> 
             {component 'bs-button.toggle' 
                 attributes = ['data-toggle-view' => true] 
                 name="view" 
@@ -20,12 +20,10 @@
                     [icon => "th-list", value => 'column', bmods => "outline-secondary"]] 
             }
         </div>
-        <div class="align-self-center pr-1 pl-2">     
-            {$aLang.plugin.media.library.sort.text} 
-        </div>
-        <div class="align-self-center"> 
+        
+        <div class="align-self-center m-1"> 
             {component "bs-form.select"
-                prepend = {component "bs-icon" icon="sort"}
+                prepend = {component "bs-icon" icon="sort" display="s"}
                 name = "order"
                 classesGroup = "mb-0"
                 classes = "sort-field"
@@ -41,16 +39,45 @@
                 ]
 
             }
+            
+        </div>
+            
+        <div class="align-self-center m-1"> 
+            {component "bs-form.select"
+                prepend = {component "bs-icon" icon="file" display="r"}
+                name = "type"
+                classesGroup = "mb-0"
+                classes = "sort-field"
+                items = [
+                    [
+                        text => $aLang.plugin.media.library.types.all,
+                        value => 'all'
+                    ],
+                    [
+                        text => $aLang.plugin.media.library.types.images,
+                        value => 'image'
+                    ],
+                    [
+                        text => $aLang.plugin.media.library.types.video,
+                        value => 'video'
+                    ],
+                    [
+                        text => $aLang.plugin.media.library.types.docs,
+                        value => 'doc'
+                    ]
+                ]
+
+            }
+            
         </div>
         
         {if $oUser->isAdministrator() or $oUser->isAllow('media_admin')}
-            <div class="align-self-center pr-1 pl-2"> 
-                {$aLang.plugin.media.library.author}:
-            </div>
-            <div class="align-self-center"> 
+            
+            <div class="align-self-center m-1"> 
                 {component "bs-form.text" 
+                    prepend = {component "bs-icon" icon="user" display="r"}
                     classes = "sort-field"
-                    placeholder = "administrator"
+                    placeholder = $aLang.plugin.media.library.author
                     name = "author"
                     classesGroup = "mb-0"
                 }
@@ -60,15 +87,26 @@
     </form>
     
     
-    <div class="d-flex flex-wrap py-2 media-tile" data-library-medias></div>
+    <div class="d-flex flex-wrap pb-2 media-tile" data-library-medias></div>
     
     {component "bs-button" 
         badge   = ' '
         icon    = 'redo-alt'
         attributes  = ['data-load-btn' => true] 
         bmods       = "primary" 
-        text        = "Подгрузить"}
+        text        = $aLang.plugin.media.library.button_load.text}
+        
+    {component "bs-button" 
+        attributes  = ['data-clear-btn' => true] 
+        bmods       = "outline-secondary" 
+        text        = $aLang.plugin.media.library.button_clear.text}
     
+    {component "bs-button" 
+        attributes  = ['data-insert-btn' => true] 
+        bmods       = "success" 
+        classes     = "d-none"
+        text        = $aLang.plugin.media.library.button_insert.text}
+        
     {component "bs-modal"
         bmods   = "lg"
         attributes = [
