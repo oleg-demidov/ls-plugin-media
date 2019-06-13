@@ -32,7 +32,8 @@
                 clearBtn:   "[data-clear-btn]",
                 insertBtn:  "[data-insert-btn]",
                 viewField:  "[data-toggle-view] input",
-                sortFields: ".sort-field"
+                sortFields: ".sort-field",
+                mediaLibraryModal: "@#mediaLibraryModal"
             },
             // Классы
             classes: {
@@ -45,13 +46,17 @@
                 
             },
             
+            multiple: true,
+            
             page:1,
 
             i18n: {
             },
 
             // Доп-ые параметры передаваемые в аякс запросах
-            params: {}
+            params: {},
+            
+            chooseCall: null
 
         },
 
@@ -76,6 +81,8 @@
             
             this._on(this.elements.mediaContainer, {click: "checkSelect"});
             
+            this._on(this.elements.insertBtn, {click: "onChoose"});
+            
             this.elements.loadBtn.on('click', this.more.bind(this));
             
             this.elements.toggleView.find('input').on('change', function(event){
@@ -95,6 +102,17 @@
         more: function(){
             this._load('load', {page:this.option('page')}, 'onLoad');
             this.elements.loadBtn.bsButton('loading');
+        },
+        
+        chooseMedia: function(chooseCall){
+            this.elements.mediaLibraryModal.modal('show');
+            this.option('chooseCall', chooseCall);
+        },
+        
+        onChoose: function(){
+            this.elements.mediaLibraryModal.modal('hide');
+            this.option('chooseCall')(this.getSelectMedia());
+            this.deselectAll();
         },
         
         onLoad: function(response){
@@ -124,18 +142,8 @@
             
             medias.mediaMedia();
             
-            //this.attachEventsMedia(medias)
         },
-        
-        attachEventsMedia: function(medias){
-            medias.on('click', function(event){
-                $(event.currentTarget).mediaMedia('select');
-                this.getMedias()
-                    .not(event.currentTarget)
-                    .mediaMedia('deselect');
-            }.bind(this))
-        },
-        
+                
         deselectAll: function(){
             this.getMedias().mediaMedia('deselect');
             this.checkSelect();
@@ -160,14 +168,19 @@
                 });
         },
         
-        checkSelect: function(){
-            let elements = this.getSelectMedia();
+        checkSelect: function(event){
+           
+            if(!this.option('multiple') && event !== undefined){
+                this.getMedias().not(event.target).mediaMedia('deselect');
+                this.onChoose();
+            }
             
-            if(elements.length){
+            if(this.getSelectMedia().length){
                 this.elements.insertBtn.removeClass('d-none');
             }else{
                 this.elements.insertBtn.addClass('d-none');
             }
+            
         }
         
     });

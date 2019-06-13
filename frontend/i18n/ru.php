@@ -16,6 +16,9 @@ return [
         'modal' => [
             'header' => 'Медиафайлы'
         ],
+        'modal_insert' => [
+            'header' => 'Вставка изображения'
+        ],
         'button' => [
             'tooltip' => 'Вставить медиа'
         ],

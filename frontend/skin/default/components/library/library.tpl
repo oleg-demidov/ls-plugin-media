@@ -94,17 +94,19 @@
         icon    = 'redo-alt'
         attributes  = ['data-load-btn' => true] 
         bmods       = "primary" 
+        classes     = "m-1"
         text        = $aLang.plugin.media.library.button_load.text}
         
     {component "bs-button" 
         attributes  = ['data-clear-btn' => true] 
         bmods       = "outline-secondary" 
+        classes     = "m-1"
         text        = $aLang.plugin.media.library.button_clear.text}
     
     {component "bs-button" 
         attributes  = ['data-insert-btn' => true] 
         bmods       = "success" 
-        classes     = "d-none"
+        classes     = "m-1"
         text        = $aLang.plugin.media.library.button_insert.text}
         
     {component "bs-modal"
