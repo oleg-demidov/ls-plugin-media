@@ -8,11 +8,12 @@ class PluginMedia_ModuleMedia extends ModuleORM
     const MEDIA_TYPE_DOC = 'doc';
     
     /*
-     * Списки типов файлов соответствующие типам модуля
+     * Списки типов файлов допустимые к загрузке
      */
     protected $aTypesAllow = [
         self::MEDIA_TYPE_IMAGE => [
-            'image/jpeg'
+            'image/jpeg',
+            'image/png'
         ]
     ];
     
@@ -466,5 +467,133 @@ class PluginMedia_ModuleMedia extends ModuleORM
     
     public function GetImageSize($aSize) {
         return $aSize['w'] . 'x' . $aSize['h'] . ($aSize['crop']?'crop':'');
+    }
+    
+    public function SaveMedias($sTargetType, $iTargetId, $aMedia) {
+        
+        $this->PluginMedia_Media_DeleteTargetItemsByFilter([
+            'target_id' => $iTargetId,
+            'target_type' => $sTargetType
+        ]);
+        
+        
+        foreach ($aMedia as $oMedia) {
+            $oTargetMedia = Engine::GetEntity( "PluginMedia_Media_Target", [
+                'media_id' => $oMedia->getId(),
+                'target_type' => $sTargetType,
+                'target_id' => $iTargetId
+            ]);
+            $oTargetMedia->Save();
+        }
+    }
+    
+    public function SaveMediasToTarget($oTarget) { 
+        return  $this->SaveMedias(
+            $oTarget->media->getTargetType(), 
+            $oTarget->getId(), 
+            $oTarget->getMedia()?$oTarget->getMedia():[]
+        );
+    }
+    
+    public function GetMediaTargets($oTarget, $aFilter = []) {
+        return $this->GetTargetItemsByFilter(array_merge([
+            'target_type' => $oTarget->media->getTargetType(),
+            'target_id' => $oTarget->getId()
+        ], $aFilter));
+    }
+    
+    public function RemoveMedias($oTarget) {
+        $aTargets = $this->GetMediaTargets($oTarget);
+        
+        foreach ($aTargets as $oTarget) {
+            $oTarget->Delete();
+        }
+    }
+    
+    public function GetMedias($oTarget) {
+        $aTargets = $this->GetMediaTargets($oTarget, ['#index-from' => 'media_id']);
+        
+        return $this->GetMediaItemsByFilter([
+            'id in' => array_merge(array_keys($aTargets), [0])
+        ]);
+    }
+    
+    
+    public function RewriteGetItemsByFilter($aResult, $aFilter)
+    {
+        if (!$aResult) {
+            return;
+        }
+        /**
+         * Список на входе может быть двух видов:
+         * 1 - одномерный массив
+         * 2 - двумерный, если применялась группировка (использование '#index-group')
+         *
+         * Поэтому сначала сформируем линейный список
+         */
+        if (isset($aFilter['#index-group']) and $aFilter['#index-group']) {
+            $aEntitiesWork = array();
+            foreach ($aResult as $aItems) {
+                foreach ($aItems as $oItem) {
+                    $aEntitiesWork[] = $oItem;
+                }
+            }
+        } else {
+            $aEntitiesWork = $aResult;
+        }
+
+        if (!$aEntitiesWork) {
+            return;
+        }
+        /**
+         * Проверяем необходимость цеплять media
+         */
+        if (isset($aFilter['#with']['#media'])) {
+            $this->AttachMediasForTargetItems($aEntitiesWork);
+        }
+    }
+    
+    public function AttachMediasForTargetItems($aEntityItems)
+    {
+        if (!is_array($aEntityItems)) {
+            $aEntityItems = array($aEntityItems);
+        }
+        $aEntitiesId = array();
+        
+        $oBehavior = current($aEntityItems)->getBehavior('media');
+        if(!$oBehavior){
+            return;
+        }
+        
+        foreach ($aEntityItems as $oEntity) {
+            $aEntitiesId[] = $oEntity->getId();
+        }
+        /**
+         * Получаем media для всех объектов
+         */
+        $aMedias = $this->GetMediaItemsByFilter(array(
+            '#join'        => array(
+                "JOIN " . Config::Get('db.table.media_target') . " media_target ON
+                t.id = media_target.media_id and
+                media_target.target_type = ? and
+                media_target.target_id IN ( ?a )
+                " => array($oBehavior->getTargetType(), $aEntitiesId)
+            ),
+            '#select'      => array(
+                't.*',
+                'media_target.target_id'
+            ),
+            '#index-group' => 'target_id'
+        ));
+        /**
+         * Собираем данные
+         */
+        foreach ($aEntityItems as $oEntity) {
+            if (isset($aMedias[$oEntity->_getPrimaryKeyValue()])) {
+                $oEntity->_setData(array('media' => $aMedias[$oEntity->_getPrimaryKeyValue()]));
+            } else {
+                $oEntity->_setData(array('media' => array()));
+            }
+        }
     }
 }

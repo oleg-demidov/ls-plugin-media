@@ -76,6 +76,8 @@
                 
                 onUploadSuccess: this.onUploadSuccess.bind( this ),
                 
+                onUploadError: this.onUploadError.bind( this ),
+                
                 onDocumentDragEnter: function(){
                     this.option('originalColorBorder', this.elements.upload_zone.css('border-color'));
                     this.elements.upload_zone.css('border-color', 'green');
@@ -125,6 +127,9 @@
          * 
          */
         onUploadSuccess: function( id, data ) {
+            if ( data.bStateError ) {
+                ls.msg.error( data.sMsgTitle, data.sMsg );
+            }
             if(this.option('uploadableFiles')[id] !== undefined){
                 this.option('uploadableFiles')[id].mediaFile('successUpload');
                 this._trigger('onUploadSuccess', null, {
@@ -136,24 +141,14 @@
         /**
          * 
          */
-        onUploadError: function( fileObj, response ) {
-            ls.msg.error( response.sMsgTitle, response.sMsg);
+        onUploadError: function( id, xhr, status, message ) {
+            ls.msg.error( status, message);
             
-            let file = this.elements.upload_zone.find('#'+fileObj.name.replace(/[^a-zA-Z0-9 ]/g, ""));
-            setTimeout(function(){file.hide(500);}, 3000);
-            file.find('.close').on('click', function(){
-                file.hide();
-            });
-            
-            this._trigger('onFileError', null, { file: fileObj, response: response });
-        },
-
-        onFileAdd: function(event, data){
-            let fileObj = data.files[0];
-            let file = this.elements.upload_zone.find('#'+fileObj.name.replace(/[^a-zA-Z0-9 ]/g, ""));
-            if(file.length){
-                ls.msg.error( this._i18n('errorDublicate'));
-                return false;
+            if(this.option('uploadableFiles')[id] !== undefined){
+                this._trigger('onUploadError', null, {
+                    xhr: xhr,
+                    file: this.option('uploadableFiles')[id].mediaFile('option', 'data') });
+                this.option('uploadableFiles')[id].mediaFile('errorUpload');
             }
         }
     });

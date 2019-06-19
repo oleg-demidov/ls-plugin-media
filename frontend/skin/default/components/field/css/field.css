@@ -1,0 +1,16 @@
+/* 
+    Created on : 09.05.2019, 23:25:13
+    Author     : oleg
+*/
+
+/**
+ * Upload area
+ */
+.media-add-btn{
+    width: 100px;
+    height: 100px;
+}
+
+.media-short .media-info{
+    display: none;
+}

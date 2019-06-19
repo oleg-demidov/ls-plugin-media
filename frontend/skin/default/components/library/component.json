@@ -4,6 +4,7 @@
     "dependencies": {
         "media:uploader":"*",
         "media:media":"*",
+        "media:field":"*",
         "bs-button":"*"
     },
     "templates": {

@@ -1,5 +1,5 @@
 
-{component_define_params params=[ 'oMedia', 'alt', 'attributes', 'classes', 'mods' ]}
+{component_define_params params=[ 'oMedia', 'alt', 'attributes', 'classes', 'mods']}
 
 {if $oMedia}
     {$img = $oMedia->getObject()->getWebPath('100x100crop')}
@@ -10,6 +10,7 @@
 <div class="m-1 {$classes} position-relative media-item" data-media-item {cattr list=$attributes} {if $img}style="background-image: url({$img});"{/if}>
         
     {if $oMedia}
+        <input type="hidden" value="{$oMedia->getId()}" name="{Config::Get('plugin.media.field_name')}[]">
         <div class="media-info">
             <div class="d-flex flex-column p-1 w-100 justify-content-between">
                     <div data-media-name class="text-truncate">{$oMedia->getName()}</div>

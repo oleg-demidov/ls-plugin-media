@@ -109,13 +109,6 @@
         classes     = "m-1"
         text        = $aLang.plugin.media.library.button_insert.text}
         
-    {component "bs-modal"
-        bmods   = "lg"
-        attributes = [
-            'data-media-modal' => true
-        ]
-        header  = ""
-        content = "media"
-    }
+    
 
 </div>

@@ -1,0 +1,17 @@
+{
+    "name": "field",
+    "version": "1.0.0",
+    "dependencies": {
+        
+    },
+    "templates": {
+        "field": "field.tpl",
+        "media-item": "media-item.tpl"
+    },
+    "scripts": {
+        "field": "js/field.js"
+    },
+    "styles":{
+        "field": "css/field.css"
+    }
+}

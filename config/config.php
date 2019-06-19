@@ -28,6 +28,7 @@ $config['$root$']['plugin']['admin']['components'] = array_merge(
 );
 
 $config['library']['per_page'] = 20;
+$config['field_name'] = 'media';
 
 
 // Модуль Image

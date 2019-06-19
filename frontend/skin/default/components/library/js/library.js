@@ -111,7 +111,9 @@
         
         onChoose: function(){
             this.elements.mediaLibraryModal.modal('hide');
-            this.option('chooseCall')(this.getSelectMedia());
+            let media = this.getSelectMedia().clone();
+            media.mediaMedia().mediaMedia('deselect');
+            this.option('chooseCall')(media);
             this.deselectAll();
         },
         

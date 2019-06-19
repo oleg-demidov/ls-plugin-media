@@ -31,7 +31,8 @@ class PluginMedia_ActionMedia extends ActionPlugin
         $this->RegisterEventExternal('Media', 'PluginMedia_ActionMedia_EventMedia');
         $this->AddEventPreg( '/^upload$/', '/^$/', 'Media::EventUpload');
         $this->AddEventPreg( '/^load$/', '/^$/', 'Media::EventLoad');
-        $this->AddEventPreg( '/^remove$/', '/^$/', 'Media::EventRemove');        
+        $this->AddEventPreg( '/^remove$/', '/^$/', 'Media::EventRemove');      
+        $this->AddEventPreg( '/^form-insert$/', '/^$/', 'Media::EventFormInsert');
     }
 
     public function EventShutdown() {

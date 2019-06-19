@@ -154,35 +154,20 @@ class PluginMedia_ActionMedia_EventMedia extends Event {
     
     
     
-//    public function EventMediaSubmitInsert()
-//    {
-//        $aIds = array(0);
-//        foreach ((array)getRequest('ids') as $iId) {
-//            $aIds[] = (int)$iId;
-//        }
-//
-//        if (!($aMediaItems = //$this->Media_GetAllowMediaItemsById($aIds))) {
-//            $this->Message_AddError($this->Lang_Get('media.error.need_choose_items'));
-//            return false;
-//        }
-//
-//        $aParams = array(
-//            'align'        => getRequestStr('align'),
-//            'size'         => getRequestStr('size', '500x'),
-//            'relative_web' => true
-//        );
-//        /**
-//         * Если изображений несколько, то генерируем идентификатор группы для лайтбокса
-//         */
-//        if (count($aMediaItems) > 1) {
-//            $aParams['lbx_group'] = rand(1, 100);
-//        }
-//
-//        $sTextResult = '';
-//        foreach ($aMediaItems as $oMedia) {
-//            $sTextResult .= //$this->Media_BuildCodeForEditor($oMedia, $aParams) . "\r\n";
-//        }
-//        $this->Viewer_AssignAjax('sTextResult', $sTextResult);
-//    }
+    public function EventFormInsert()
+    {
+        if(!$oMedia = $this->PluginMedia_Media_GetMediaById(getRequest('id'))){
+            $this->Message_AddError( $this->Lang_Get('plugin.media.library.notices.error_no_media'));
+            return;
+        }
+        
+        $oViewer = $this->Viewer_GetLocalViewer();
+        $oViewer->Assign('oMedia', $oMedia, true);
+        $sForm = $oViewer->Fetch('component@media:media.form-insert-'. $oMedia->getType() );
+        $this->Viewer_AssignAjax('html', $sForm);
+        
+        $sTemplate = $oViewer->Fetch('component@media:media.template-'. $oMedia->getType() );
+        $this->Viewer_AssignAjax('template', $sTemplate);
+    }
 
 }

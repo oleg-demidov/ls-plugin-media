@@ -6,6 +6,9 @@
  * @author    Oleg Demidov
  */
 ls.hook.add('ls_template_init_start', function(){ 
+    if(window.tinymce === undefined){
+        return;
+    }
     tinymce.PluginManager.add('lsmedia', function(editor, url) {
 
         // Вставка медиа-объектов
@@ -14,8 +17,10 @@ ls.hook.add('ls_template_init_start', function(){
             tooltip: ls.lang.get('plugin.media.library.button.tooltip'),
             onclick: function() {
                 $('[data-library]').mediaLibrary('chooseMedia', function(media){
-                    console.log(media.mediaMedia('option', 'id'));
-                    $('#mediaInsert').modal('show');
+                    $('#modalInsert').mediaModalInsert('show', media.mediaMedia('option', 'id'));
+                    $('#modalInsert').mediaModalInsert('option', 'onInsert', function(event, text){
+                         editor.insertContent(text);
+                    });
                 }).mediaLibrary('option', 'multiple', false);
             }
         });

@@ -17,7 +17,7 @@ return [
             'header' => 'Медиафайлы'
         ],
         'modal_insert' => [
-            'header' => 'Вставка изображения'
+            'header' => 'Вставка медиафайла'
         ],
         'button' => [
             'tooltip' => 'Вставить медиа'
@@ -40,7 +40,10 @@ return [
             'video' => 'Видео',
             'docs' => 'Документы'
         ],
-        'blankslate' => 'Медиафайлов нет'
+        'blankslate' => 'Медиафайлов нет',
+        'notices' => [
+            'error_no_media' => 'Медиа файл не найден'
+        ]
     ],
     'admin' => [
         'nav' => [
@@ -50,7 +53,10 @@ return [
     'media' => [
         'notices' => [
             'error_validate_exists' => 'Уже есть в базе',
-            'error_remove_access' => 'Вы не можете удалить этот файл'
+            'error_remove_access' => 'Вы не можете удалить этот файл',
+            'error_validate_count_min' => 'Медиафайлов не может быть меньше %%min%%',
+            'error_validate_count_max' => 'Медиафайлов не может быть больше %%max%%',
+            'error_validate_count' => 'Медиафайлов должно быть от %%min%% до %%max%%'
         ],
         'type' => [
             'image' => 'Картинка',

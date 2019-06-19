@@ -6,10 +6,14 @@
     },
     "templates": {
         "item": "media-item.tpl",
-        "list": "media-list.tpl"
+        "list": "media-list.tpl",
+        "modal-insert": "modal-insert.tpl",
+        "form-insert-image": "forms/form-image.tpl",
+        "template-image": "templates/image.tpl"
     },
     "scripts": {
-        "media": "js/media.js"
+        "media": "js/media.js",
+        "modal-insert": "js/modal-insert.js"
     },
     "styles":{
         "media":"css/media.css"

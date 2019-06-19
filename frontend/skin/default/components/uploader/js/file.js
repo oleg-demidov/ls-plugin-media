@@ -61,6 +61,10 @@
         successUpload: function( data ){
             this.elements.progress.addClass('d-none');
             this.element.hide();
+        },
+        
+        errorUpload: function(){
+            this.element.hide();
         }
         
     });

@@ -20,7 +20,23 @@ class PluginMedia_ModuleMedia_EntityImage extends Entity
         }
     }
     
+    public function getWebPathOriginal()
+    {
+        return $this->getWebPath(Config::Get('plugin.media.image.original'));
+    }
+    
     public function getSizes() {
         return $this->PluginMedia_Media_GetImageSizes();
     }
+    
+    public function getWebPathAll() {
+        $aPath = [];
+        
+        foreach ($this->getSizes() as $sSize) {
+            $aPath[$sSize] = $this->getWebPath($sSize);
+        }
+        
+        return $aPath;
+    }
+    
 }
