@@ -32,6 +32,15 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
      * @var array
      */
     protected $aParams = array(
+        'field_name'                     => 'media',
+        //Обрезать ли фото
+        'crop'                           => true,
+        // Имя размера для обрезанного фото
+        'crop_size_name'                 => 'cropped',
+        // Пропорции области вырезки
+        'crop_aspect_ratio'              => 2/1,
+        
+        'field_label'                    => 'plugin.media.media.field_label',
         // Уникальный код
         'target_type'                    => null,
         // Автоматическая валидация media (актуально при ORM)
@@ -70,11 +79,11 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
      * @param $aParams
      */
     public function CallbackValidateAfter($aParams)
-    { $this->Logger_Notice(print_r($aParams, true));
+    { 
         if ($aParams['bResult'] and $this->getParam('validate_enable')) {
             $aFields = $aParams['aFields'];
             $oValidator = $this->Validate_CreateValidator('media', $this,
-                Config::Get('plugin.media.field_name'));
+                $this->getParam('field_name'));
             $oValidator->validateEntity($this->oObject, $aFields);
             $aParams['bResult'] = !$this->oObject->_hasValidateErrors();
         }
@@ -86,7 +95,10 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
      */
     public function CallbackAfterSave()
     {
-        $this->PluginMedia_Media_SaveMediasToTarget($this->oObject);
+        $this->PluginMedia_Media_SaveMedias(
+            $this->getParam('target_type'), 
+            $this->oObject->getId(),
+            $this->oObject->getMedia()?$this->oObject->getMedia():[]);
     }
 
     /**
@@ -95,13 +107,10 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
      */
     public function CallbackAfterDelete()
     {
-        $this->PluginMedia_Media_RemoveMedias($this->oObject);
+        $this->PluginMedia_Media_RemoveMedias($this->oObject, $this->getParam('target_type'));
     }
 
     public function getTargetType() {
-        if(!$this->getParam('target_type')){
-            return strtolower(Engine::GetEntityName($this->oObject));
-        }
         return $this->getParam('target_type');
     }
     /**
@@ -115,7 +124,7 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
     public function ValidateMedia($mValue)
     {
         if (!$mValue) {
-            $mValue = getRequest(Config::Get('plugin.media.field_name'), []);
+            $mValue = getRequest($this->getParam('field_name'), []);
         }
         
         $aMedia = $this->PluginMedia_Media_GetMediaItemsByFilter([
@@ -151,6 +160,6 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
         if($this->oObject->getMedia()){
             return $this->oObject->getMedia();
         }
-        return $this->PluginMedia_Media_GetMedias($this->oObject);
+        return $this->PluginMedia_Media_GetMedias($this->oObject, $this->getParam('target_type') );
     }    
 }

@@ -51,6 +51,8 @@ return [
         ]
     ],
     'media' => [
+        'field_label' => 'Медиафайлы:',
+        'choose_btn' => 'Выбрать',
         'notices' => [
             'error_validate_exists' => 'Уже есть в базе',
             'error_remove_access' => 'Вы не можете удалить этот файл',

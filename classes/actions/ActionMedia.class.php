@@ -33,6 +33,8 @@ class PluginMedia_ActionMedia extends ActionPlugin
         $this->AddEventPreg( '/^load$/', '/^$/', 'Media::EventLoad');
         $this->AddEventPreg( '/^remove$/', '/^$/', 'Media::EventRemove');      
         $this->AddEventPreg( '/^form-insert$/', '/^$/', 'Media::EventFormInsert');
+        $this->AddEventPreg( '/^get-data$/', '/^$/', 'Media::EventGetData');
+        $this->AddEventPreg( '/^crop-image$/', '/^$/', 'Media::EventCropImage');
     }
 
     public function EventShutdown() {

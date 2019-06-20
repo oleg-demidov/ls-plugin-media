@@ -28,7 +28,7 @@
                 progress:   ".progress",
                 close:      ".media-close",
                 mediaModal: "@[data-media-modal]",
-                name:       "[data-media-name]"
+                name:       "[data-media-name]" 
             },
             // Классы
             classes: {
@@ -75,6 +75,10 @@
             }
             
             this._on(this.element, {click:"toggleSelect"});
+        },
+              
+        getWebPath: function(){
+            return this.element.data('webPath');
         },
         
         select: function(){

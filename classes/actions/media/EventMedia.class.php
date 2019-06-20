@@ -102,6 +102,7 @@ class PluginMedia_ActionMedia_EventMedia extends Event {
     
 
     
+    
     public function EventUpload()
     {
         
@@ -153,6 +154,29 @@ class PluginMedia_ActionMedia_EventMedia extends Event {
     }
     
     
+    public function EventCropImage() {
+        if(!$oMedia = $this->PluginMedia_Media_GetMediaById(getRequest('id'))){
+            $this->Message_AddError( $this->Lang_Get('plugin.media.library.notices.error_no_media'));
+            return;
+        }
+
+        if(($sResult = $this->PluginMedia_Media_NewSizeFromCrop($oMedia, getRequest('size'), getRequest('canvasWidth'), 
+                getRequest('sizeName')) ) !== true){
+            $this->Message_AddError($sResult);
+        }
+        
+        $sPreviewSize = getRequest('sizeName').'_preview';
+        if(($sResult = $this->PluginMedia_Media_NewSizeFromCrop($oMedia, getRequest('size'), getRequest('canvasWidth'), 
+                $sPreviewSize, [null, 100]) ) !== true){
+            $this->Message_AddError($sResult);
+        }
+       
+        $oViewer = $this->Viewer_GetLocalViewer();
+        $oViewer->Assign('oMedia', $oMedia, true);
+        $oViewer->Assign('size', $sPreviewSize, true);
+        $sMedia = $oViewer->Fetch('component@media:media.image');
+        $this->Viewer_AssignAjax('html', $sMedia);
+    }
     
     public function EventFormInsert()
     {

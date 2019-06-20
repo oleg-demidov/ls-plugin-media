@@ -26,7 +26,8 @@
                 addBtn:     "[data-add-btn]",
                 removeBtn:  "[data-remove-btn]",
                 countField: "[data-media-count-field]",
-                count:      "[data-media-count] [btn-text]"
+                count:      "[data-media-count] [btn-text]",
+                cropper:    '@[data-cropper]'  
             },
             // Классы
             classes: {
@@ -66,25 +67,42 @@
         onClickAdd: function(){
             $('[data-library]')
                 .mediaLibrary('chooseMedia', this.onChoose.bind(this))
-                .mediaLibrary('option', 'multiple', true);
+                .mediaLibrary('option', 'multiple', this.element.data('multiple'));
         },
         
         onChoose: function($media){
-            let ids = $.map( this.elements.body.children(), function(id, el) {
-                return $(id).data('id');
-            });
-
-            $media = $media.filter(function(id, element){
-                return ($.inArray($(element).data('id'), ids) == -1);
-            }.bind(this));
             
-            this.elements.body.append($media);
-            this.updateCount();
+            if(!this.element.data('multiple')){
+                this.elements.body.empty();
+                if($media.length > 1){
+                    $media = $($media.get(0))
+                }
+            }else{
+                let ids = $.map( this.elements.body.children(), function(id, el) {
+                    return $(id).data('id');
+                });
+
+                $media = $media.filter(function(id, element){
+                    return ($.inArray($(element).data('id'), ids) == -1);
+                }.bind(this));
+            }
+            
+            if(this.element.data('crop')){ 
+                this.elements.cropper.mediaCropper('crop', $media,  function(e, data){
+                    this.elements.body.html(data.html);
+                    this.elements.body.children().mediaMedia();
+                    this.updateCount();
+                }.bind(this));
+            }else{
+                this.elements.body.prepend($media);
+                this.updateCount();
+            }
+            
         },
         
         updateCount: function(){
             let count = this.elements.body.children().length;
-            this.elements.countField.attr('value', count).change();console.log(this.elements.countField.val())
+            this.elements.countField.attr('value', count).change();
             this.elements.count.text(count);
         },
         

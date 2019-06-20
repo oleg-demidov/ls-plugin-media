@@ -1,18 +1,20 @@
  
 {extends "component@bs-form.field"}
 
-{component_define_params params=[ 'multiple', 'oEntity']}
+{component_define_params params=[ 'multiple', 'oBehavior']}
 
 {block name="field_options"}
+    {$multiple = $multiple|default:false}
+    {$label = {lang name=$oBehavior->getParam('field_label')}}
     {$attributesGroup['data-media-field'] = true}
-    {$attributesGroup['data-name'] = "{$name|default:'media'}[]"}
-    {$attributesGroup['data-multiple'] = {$multiple|default:"true"}}
+    {$attributesGroup['data-multiple'] = "{if $multiple}true{else}false{/if}"}
+    {$attributesGroup['data-crop'] = "{if $oBehavior->getParam('crop')}true{else}false{/if}"}
     
     {$validateRules['type'] = "number"}
-    {$validateRules['min'] = $oEntity->media->getParam('validate_min')}
-    {$validateRules['max'] = $oEntity->media->getParam('validate_max')}
+    {$validateRules['min'] = $oBehavior->getParam('validate_min')}
+    {$validateRules['max'] = $oBehavior->getParam('validate_max')}
     {$validate['msgError'] = {lang 
-        name=$oEntity->media->getParam('validate_msg') 
+        name=$oBehavior->getParam('validate_msg') 
         min=$validateRules['min'] 
         max=$validateRules['max']}}
 {/block}
@@ -23,9 +25,9 @@
 
 {block name="field_input"}
 
-    {$aMedias = $oEntity->media->getMedia()}
+    {$aMedias = $oBehavior->getMedia()}
 
-    <input class="d-none form-control" data-media-count-field name="{Config::Get('plugin.media.field_name')}_count" 
+    <input class="d-none form-control" data-media-count-field name="{$oBehavior->getParam('field_name')}_count" 
         {cattr list=$validateRules} value="{$aMedias|@sizeof}">
     
     {capture name="content"}
@@ -39,20 +41,30 @@
     
     {capture name="footer"}
       
-        {component "bs-button.group" 
-            items =[ 
-                [
-                    attributes  => ["data-media-count" => true],
-                    bmods       => "outline-primary", 
-                    text        => {$aMedias|sizeof}
-                ],
-                [
-                    attributes  => ["data-add-btn" => true],
-                    bmods       => "outline-primary", 
-                    icon        => "plus", 
-                    text        => $aLang.common.add
-                ]
-        ]}
+        {if $multiple}
+            {component "bs-button.group" 
+                items =[ 
+                    [
+                        attributes  => ["data-media-count" => true],
+                        bmods       => "outline-primary", 
+                        text        => {$aMedias|sizeof}
+                    ],
+                    [
+                        attributes  => ["data-add-btn" => true],
+                        bmods       => "outline-primary", 
+                        icon        => "plus", 
+                        text        => $aLang.common.add
+                    ]
+            ]}
+        {else}
+            {component "bs-button" 
+                attributes  = ["data-add-btn" => true]
+                bmods       = "outline-primary"
+                icon        = "plus" 
+                text        = $aLang.plugin.media.media.choose_btn
+            }
+        {/if}
+        
             
         {component "bs-button" 
             attributes  = ["data-remove-btn" => true] 

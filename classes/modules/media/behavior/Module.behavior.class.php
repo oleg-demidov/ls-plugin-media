@@ -26,7 +26,13 @@
  */
 class PluginMedia_ModuleMedia_BehaviorModule extends Behavior
 {
+    public $sName;
     
+    protected $aParams = array(
+        // Уникальный код
+        'target_type'                    => null,
+        
+    );
     /**
      * Список хуков
      *
@@ -49,7 +55,12 @@ class PluginMedia_ModuleMedia_BehaviorModule extends Behavior
     {
         $aEntities = $aParams['aEntities'];
         $aFilter = $aParams['aFilter'];
-        $this->PluginMedia_Media_RewriteGetItemsByFilter($aEntities, $aFilter);
+        $this->PluginMedia_Media_RewriteGetItemsByFilter(
+            $aEntities, 
+            $aFilter,
+            $this->GetBehaviors()
+        );
     }
+    
 
 }

@@ -486,44 +486,64 @@ class PluginMedia_ModuleMedia extends ModuleORM
             $oTargetMedia->Save();
         }
     }
-    
-    public function SaveMediasToTarget($oTarget) { 
-        return  $this->SaveMedias(
-            $oTarget->media->getTargetType(), 
-            $oTarget->getId(), 
-            $oTarget->getMedia()?$oTarget->getMedia():[]
-        );
-    }
-    
-    public function GetMediaTargets($oTarget, $aFilter = []) {
-        return $this->GetTargetItemsByFilter(array_merge([
-            'target_type' => $oTarget->media->getTargetType(),
-            'target_id' => $oTarget->getId()
-        ], $aFilter));
-    }
-    
-    public function RemoveMedias($oTarget) {
-        $aTargets = $this->GetMediaTargets($oTarget);
+        
+    public function RemoveMedias($oTarget, $sTargetType) {
+        $aTargets = $this->GetTargetItemsByFilter([
+            'target_type' => $sTargetType,
+            'target_id' => $oTarget->getId(),
+        ]);
         
         foreach ($aTargets as $oTarget) {
             $oTarget->Delete();
         }
     }
     
-    public function GetMedias($oTarget) {
-        $aTargets = $this->GetMediaTargets($oTarget, ['#index-from' => 'media_id']);
+    public function GetMedias($oTarget, $sTargetType) {
+        $aTargets = $this->GetTargetItemsByFilter([
+            'target_type' => $sTargetType,
+            'target_id' => $oTarget->getId(),
+            '#index-from' => 'media_id'
+        ]);
         
         return $this->GetMediaItemsByFilter([
             'id in' => array_merge(array_keys($aTargets), [0])
         ]);
     }
     
+    protected function getBehaviorThis($aFilterWith, $aBehaviors) {
+        foreach ($aBehaviors as $sName => $oBehavior) {
+            if(!($oBehavior instanceof PluginMedia_ModuleMedia_BehaviorModule)){
+                continue;
+            }
+            if (!in_array('#'.$sName, $aFilterWith) and !array_key_exists('#'.$sName, $aFilterWith)) {
+                continue;
+            }
+            $oBehavior->sName = $sName;
+            return $oBehavior;
+            
+        }
+        return false;
+    }
     
-    public function RewriteGetItemsByFilter($aResult, $aFilter)
+    
+    public function RewriteGetItemsByFilter($aResult, $aFilter, $aBehaviors)
     {
+        
         if (!$aResult) {
             return;
         }
+        
+        /**
+         * Проверяем необходимость цеплять media
+         */
+        if (isset($aFilter['#with'])) {
+            $oBehavior = $this->getBehaviorThis($aFilter['#with'], $aBehaviors);
+        }
+        
+        if(!$oBehavior){
+            return;
+        }
+        
         /**
          * Список на входе может быть двух видов:
          * 1 - одномерный массив
@@ -545,25 +565,16 @@ class PluginMedia_ModuleMedia extends ModuleORM
         if (!$aEntitiesWork) {
             return;
         }
-        /**
-         * Проверяем необходимость цеплять media
-         */
-        if (isset($aFilter['#with']['#media'])) {
-            $this->AttachMediasForTargetItems($aEntitiesWork);
-        }
+        
+        $this->AttachMediasForTargetItems($aEntitiesWork, $oBehavior);
     }
     
-    public function AttachMediasForTargetItems($aEntityItems)
+    public function AttachMediasForTargetItems($aEntityItems, $oBehavior)
     {
         if (!is_array($aEntityItems)) {
             $aEntityItems = array($aEntityItems);
         }
         $aEntitiesId = array();
-        
-        $oBehavior = current($aEntityItems)->getBehavior('media');
-        if(!$oBehavior){
-            return;
-        }
         
         foreach ($aEntityItems as $oEntity) {
             $aEntitiesId[] = $oEntity->getId();
@@ -590,10 +601,43 @@ class PluginMedia_ModuleMedia extends ModuleORM
          */
         foreach ($aEntityItems as $oEntity) {
             if (isset($aMedias[$oEntity->_getPrimaryKeyValue()])) {
-                $oEntity->_setData(array('media' => $aMedias[$oEntity->_getPrimaryKeyValue()]));
+                $oEntity->_setData(array($oBehavior->sName => $aMedias[$oEntity->_getPrimaryKeyValue()]));
             } else {
-                $oEntity->_setData(array('media' => array()));
+                $oEntity->_setData(array($oBehavior->sName => array()));
             }
         }
+    }
+    
+     public function NewSizeFromCrop($oMedia, $aSize, $iCanvasWidth, $sNameCrop = 'cropped', $aSizes = null) {
+
+        if(!$oImage = $this->Image_Open($oMedia->getPath() )){
+            return $this->Image_GetLastError();
+        }
+        
+        $oImage->cropFromSelected($aSize, $iCanvasWidth);
+        
+        if(is_array($aSizes)){
+            call_user_func_array ( [$oImage, 'resize'] , $aSizes );
+        }
+        /**
+         * Сохраняем
+         */
+        if (false === ($sFileResult = $oImage->save($this->GetImagePathBySize($oMedia->getPath(), $sNameCrop)))) {
+            return $this->Image_GetLastError();
+        }
+        
+        $aSizesData = $oMedia->getDataOne('image_sizes');
+        
+        
+        if(is_array($aSizes)){
+            $aSizesData[] = ['w' => $aSizes[0], 'h' => isset($aSizes[1])?$aSizes[1]:null, 'crop' => true];
+        }else{
+            $aSizesData[] = ['w' => $iCanvasWidth, 'h' => null, 'crop' => true];
+        }
+        
+        $oMedia->setDataOne('sizes', $aSizesData);
+        $oMedia->Save();
+        
+        return true;
     }
 }

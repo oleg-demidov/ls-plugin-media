@@ -110,10 +110,14 @@
         },
         
         onChoose: function(){
+            let $media = this.getSelectMedia();
+            if(!$media.length){
+                return false;
+            }
             this.elements.mediaLibraryModal.modal('hide');
-            let media = this.getSelectMedia().clone();
-            media.mediaMedia().mediaMedia('deselect');
-            this.option('chooseCall')(media);
+            $media = $media.clone();
+            $media.mediaMedia().mediaMedia('deselect');
+            this.option('chooseCall')($media);
             this.deselectAll();
         },
         
@@ -173,8 +177,8 @@
         checkSelect: function(event){
            
             if(!this.option('multiple') && event !== undefined){
-                this.getMedias().not(event.target).mediaMedia('deselect');
                 this.onChoose();
+                this.getMedias().not(event.target).mediaMedia('deselect');
             }
             
             if(this.getSelectMedia().length){
