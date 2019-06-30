@@ -4,9 +4,10 @@
     "dependencies": {
         "media:uploader":"*",
         "media:media":"*",
-        "media:field":"*",
+        "media:mfield":"*",
         "bs-button":"*",
-        "media:crop":"*"
+        "media:crop":"*",
+        "media:tinymce-plugin":"*"
     },
     "templates": {
         "library": "library.tpl",
@@ -14,7 +15,8 @@
         
     },
     "scripts": {
-        "library": "js/library.js"
+        "library": "js/library.js",
+        "init":"js/init.js"
     },
     "styles":{
         "library":"css/library.css"

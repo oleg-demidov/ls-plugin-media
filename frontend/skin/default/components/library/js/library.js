@@ -77,8 +77,6 @@
                 }.bind(this)
             });
             
-            this.more();
-            
             this._on(this.elements.mediaContainer, {click: "checkSelect"});
             
             this._on(this.elements.insertBtn, {click: "onChoose"});
@@ -105,6 +103,9 @@
         },
         
         chooseMedia: function(chooseCall){
+            if (this.option('page') == 1) {
+                this.more();
+            }
             this.elements.mediaLibraryModal.modal('show');
             this.option('chooseCall', chooseCall);
         },

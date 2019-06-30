@@ -67,6 +67,9 @@ return [
         'added' => 'Добавлено',
         'remove' => 'Вы действительно хотите удалить %%name%%?'
     ],
+    'avatar' => [
+        'field_label' => 'Аватар'
+    ],
     'uploader' => [
         'label' => "Загрузить",
         'max_size' => 'Максимальный размер %%max_size%%Kb',

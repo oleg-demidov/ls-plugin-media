@@ -9,6 +9,7 @@
     {$attributesGroup['data-media-field'] = true}
     {$attributesGroup['data-multiple'] = "{if $multiple}true{else}false{/if}"}
     {$attributesGroup['data-crop'] = "{if $oBehavior->getParam('crop')}true{else}false{/if}"}
+    {$attributesGroup['data-field-name'] = $oBehavior->getParam('field_name')}
     
     {$validateRules['type'] = "number"}
     {$validateRules['min'] = $oBehavior->getParam('validate_min')}
@@ -32,8 +33,14 @@
     
     {capture name="content"}
         
+        {$size = "x100"}
+        {if $oBehavior->getParam('crop')}
+            {$size="{$oBehavior->getParam('crop_size_name')}_preview"}
+        {/if}
+
         {foreach $aMedias as $oMedia}
-            {component "media:media.item" oMedia=$oMedia}
+            
+            {component "media:media.item" oMedia=$oMedia size=$size name=$oBehavior->getParam('field_name')}
         {/foreach}
 
         

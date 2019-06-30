@@ -14,7 +14,14 @@ if (!class_exists('Plugin')) {
 
 class PluginMedia extends Plugin
 {
-    
+    protected $aInherits = [
+        'entity' => [
+            /*
+             * Для добавления аватарок
+             */
+            'ModuleUser_EntityUser' => '_ModuleMedia_EntityUser'
+        ]
+    ];
     
     public function Init()
     {
@@ -24,9 +31,6 @@ class PluginMedia extends Plugin
         ]);
 
         $this->Component_Add('media:library');
-        $this->Component_Add('media:tinymce-plugin');
-
-        $this->Viewer_AppendScript(Plugin::GetTemplatePath('media'). '/assets/js/init.js');
     }
 
     public function Activate()

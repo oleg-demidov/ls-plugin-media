@@ -1,15 +1,15 @@
 {
-    "name": "field",
+    "name": "mfield",
     "version": "1.0.0",
     "dependencies": {
         
     },
     "templates": {
-        "field": "field.tpl",
+        "mfield": "field.tpl",
         "media-item": "media-item.tpl"
     },
     "scripts": {
-        "field": "js/field.js"
+        "field": "js/mfield.js"
     },
     "styles":{
         "field": "css/field.css"

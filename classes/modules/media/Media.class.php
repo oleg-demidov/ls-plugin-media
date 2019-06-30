@@ -263,11 +263,11 @@ class PluginMedia_ModuleMedia extends ModuleORM
             'crop' => false,
         );
 
-        if (preg_match('#^(\d+)?(x)?(\d+)?([a-z]{2,10})?$#Ui', $sSize, $aMatch)) {
-            $iW = (isset($aMatch[1]) and $aMatch[1]) ? $aMatch[1] : null;
-            $iH = (isset($aMatch[3]) and $aMatch[3]) ? $aMatch[3] : null;
-            $bDelim = (isset($aMatch[2]) and $aMatch[2]) ? true : false;
-            $sMod = (isset($aMatch[4]) and $aMatch[4]) ? $aMatch[4] : '';
+        if (preg_match('#^([\D\d]{5,}\_)?(\d+)?(x)?(\d+)?([a-z]{2,10})?$#Ui', $sSize, $aMatch)) {
+            $iW = (isset($aMatch[2]) and $aMatch[2]) ? $aMatch[2] : null;
+            $iH = (isset($aMatch[4]) and $aMatch[4]) ? $aMatch[4] : null;
+            $bDelim = (isset($aMatch[3]) and $aMatch[3]) ? true : false;
+            $sMod = (isset($aMatch[5]) and $aMatch[5]) ? $aMatch[5] : '';
 
             if (!$bDelim) {
                 $iW = $iH;
@@ -287,8 +287,8 @@ class PluginMedia_ModuleMedia extends ModuleORM
             /**
              * Проверяем необходимость автоматического создания превью нужного размера - если разрешено настройками и файл НЕ существует
              */
-            if ($sSize and $this->GetConfigParam('image.autoresize',
-                    $oMedia->getType()) and !$this->Image_IsExistsFile($this->GetImagePathBySize($oMedia->getPath(),
+            if ($sSize and $this->GetConfigParam('image.autoresize', $oMedia->getType()) 
+                    and !$this->Image_IsExistsFile($this->GetImagePathBySize($oMedia->getPath(),
                     $sSize))
             ) {             
                 /**
@@ -366,6 +366,7 @@ class PluginMedia_ModuleMedia extends ModuleORM
                 }
             }
         }
+        
         return $aPathInfo['dirname'] . '/' . $aPathInfo['filename'] . '_' . $sSize . '.' . $aPathInfo['extension'];
     }
 
@@ -540,7 +541,7 @@ class PluginMedia_ModuleMedia extends ModuleORM
             $oBehavior = $this->getBehaviorThis($aFilter['#with'], $aBehaviors);
         }
         
-        if(!$oBehavior){
+        if(!isset($oBehavior) or !$oBehavior){
             return;
         }
         
@@ -639,5 +640,30 @@ class PluginMedia_ModuleMedia extends ModuleORM
         $oMedia->Save();
         
         return true;
+    }
+    
+    public function AttachUserBehaviorAvatar($oUser) {
+        $oUser->AttachBehavior('avatar', [
+            'class' => 'PluginMedia_ModuleMedia_BehaviorEntity',
+            'target_type' => 'useravatar',
+            'crop' => true,
+            'field_name' => 'useravatar',
+            'field_label' => 'plugin.media.avatar.field_label',
+            'crop_size_name' => 'useravatar'
+        ]);
+    }
+    
+    public function RemoveCroppedImages($oMedia, $sCropSizeName, $aSizes = []) {
+        $sCropedPath = $this->GetImagePathBySize($oMedia->getPath(), $sCropSizeName);
+        $aPath = [
+            $sCropedPath,
+            $this->GetImagePathBySize($sCropedPath, 'preview')
+        ];
+        foreach ($aSizes as $aSize) {
+            $aPath[] = $this->GetImagePathBySize($sCropedPath, $aSize);
+        }
+        foreach ($aPath as $sPath) {
+            $this->Fs_RemoveFileLocal($sPath);
+        }
     }
 }

@@ -71,7 +71,6 @@
         },
         
         onChoose: function($media){
-            
             if(!this.element.data('multiple')){
                 this.elements.body.empty();
                 if($media.length > 1){
@@ -87,10 +86,14 @@
                 }.bind(this));
             }
             
+            $media.mediaMedia('setNameInput', this.element.data('fieldName'));
+            console.log(this.element.data('fieldName'), $media);
+            
             if(this.element.data('crop')){ 
                 this.elements.cropper.mediaCropper('crop', $media,  function(e, data){
                     this.elements.body.html(data.html);
-                    this.elements.body.children().mediaMedia();
+                    this.elements.body.children().mediaMedia()
+                        .mediaMedia('setNameInput', this.element.data('fieldName'));
                     this.updateCount();
                 }.bind(this));
             }else{

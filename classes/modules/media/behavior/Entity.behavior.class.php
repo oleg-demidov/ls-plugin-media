@@ -34,11 +34,11 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
     protected $aParams = array(
         'field_name'                     => 'media',
         //Обрезать ли фото
-        'crop'                           => true,
+        'crop'                           => false,
         // Имя размера для обрезанного фото
         'crop_size_name'                 => 'cropped',
         // Пропорции области вырезки
-        'crop_aspect_ratio'              => 2/1,
+        'crop_aspect_ratio'              => 1/1,
         
         'field_label'                    => 'plugin.media.media.field_label',
         // Уникальный код
@@ -95,6 +95,15 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
      */
     public function CallbackAfterSave()
     {
+        $aMedia = $this->PluginMedia_Media_GetMedias($this->oObject, $this->getParam('target_type') );
+        if ($this->getParam('crop') and $aMedia) {
+            $this->PluginMedia_Media_RemoveCroppedImages(
+                current($aMedia), 
+                $this->getParam('crop_size_name'),
+                Config::Get('plugin.media.avatar.sizes')
+            );
+        }
+        
         $this->PluginMedia_Media_SaveMedias(
             $this->getParam('target_type'), 
             $this->oObject->getId(),
@@ -151,7 +160,7 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
     }
 
     /**
-     * Возвращает список категорий сущности
+     * Возвращает список 
      *
      * @return array
      */

@@ -143,7 +143,7 @@ class PluginMedia_ActionMedia_EventMedia extends Event {
         if ($mResult = $this->PluginMedia_Media_Upload($oMedia) and is_object($mResult)) {
             $oViewer = $this->Viewer_GetLocalViewer();
             $oViewer->Assign('oMedia', $mResult, true);
-            $sTemplate = $oViewer->Fetch('component@media:media.item');
+            $sTemplate = $oViewer->Fetch('component@media:media.'.$mResult->getType());
             $this->Viewer_AssignAjax('html', $sTemplate);
             
         } else {

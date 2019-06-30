@@ -20,6 +20,10 @@ class PluginMedia_ModuleMedia_EntityImage extends Entity
         }
     }
     
+    public function getImage($sPath) {
+        return $this->Image_Open($sPath);
+    }
+    
     public function getWebPathOriginal()
     {
         return $this->getWebPath(Config::Get('plugin.media.image.original'));

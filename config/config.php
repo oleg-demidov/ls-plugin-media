@@ -61,12 +61,17 @@ $config['image']['sizes'] = array(  // список размеров, котор
         'h'    => null,
         'crop' => false,
     ),
+   
     array(
         'w'    => 100,
         'h'    => 100,
         'crop' => true,
     ),
-    
+    array(
+        'w'    => null,
+        'h'    => 25,
+        'crop' => false,
+    ),
 );
 $config['image']['preview']['sizes'] = array(  // список размеров, которые необходимо делать при создании превью
     array(
@@ -80,6 +85,29 @@ $config['image']['preview']['sizes'] = array(  // список размеров,
         'crop' => true,
     ),
 );
+$config['avatar']['sizes'] = array(  // список размеров, которые необходимо делать при создании аватарки
+     array(
+        'w'    => 500,
+        'h'    => 500,
+        'crop' => false,
+    ),
+    array(
+        'w'    => 100,
+        'h'    => 100,
+        'crop' => false,
+    ),
+    array(
+        'w'    => 50,
+        'h'    => 50,
+        'crop' => false,
+    ),
+    array(
+        'w'    => 25,
+        'h'    => 25,
+        'crop' => false,
+    ),
+);
+
 
 
 return $config;

@@ -28,7 +28,8 @@
                 progress:   ".progress",
                 close:      ".media-close",
                 mediaModal: "@[data-media-modal]",
-                name:       "[data-media-name]" 
+                name:       "[data-media-name]" ,
+                input:      "[data-input]"
             },
             // Классы
             classes: {
@@ -101,6 +102,10 @@
             this._load('remove', {id:this.option('id')}, function(response){
                 this.element.remove();
             }.bind(this))
+        },
+        
+        setNameInput: function(name){
+            this.elements.input.attr('name', name + '[]');
         }
         
     });
