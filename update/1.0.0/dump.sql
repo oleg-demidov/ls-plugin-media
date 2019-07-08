@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Хост: localhost
--- Время создания: Июн 06 2019 г., 09:07
+-- Время создания: Июл 08 2019 г., 09:15
 -- Версия сервера: 5.7.26-0ubuntu0.16.04.1
 -- Версия PHP: 7.0.33-8+ubuntu16.04.1+deb.sury.org+1
 
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- База данных: `pdd`
+-- База данных: `fend`
 --
 
 -- --------------------------------------------------------
@@ -25,6 +25,8 @@ SET time_zone = "+00:00";
 --
 -- Структура таблицы `prefix_media`
 --
+
+DROP TABLE IF EXISTS `prefix_media`;
 
 CREATE TABLE `prefix_media` (
   `id` bigint(20) UNSIGNED NOT NULL,
@@ -37,11 +39,14 @@ CREATE TABLE `prefix_media` (
   `date_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+
 -- --------------------------------------------------------
 
 --
 -- Структура таблицы `prefix_media_target`
 --
+
+DROP TABLE IF EXISTS `prefix_media_target`;
 
 CREATE TABLE `prefix_media_target` (
   `id` int(11) NOT NULL,
@@ -50,6 +55,7 @@ CREATE TABLE `prefix_media_target` (
   `target_type` varchar(50) COLLATE utf8_bin NOT NULL,
   `date_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
 
 --
 -- Индексы сохранённых таблиц
@@ -72,7 +78,7 @@ ALTER TABLE `prefix_media_target`
   ADD PRIMARY KEY (`id`),
   ADD KEY `media_id` (`media_id`),
   ADD KEY `target_id` (`target_id`),
-  ADD KEY `targtet_type` (`targtet_type`),
+  ADD KEY `targtet_type` (`target_type`),
   ADD KEY `date_create` (`date_create`);
 
 --
@@ -83,12 +89,12 @@ ALTER TABLE `prefix_media_target`
 -- AUTO_INCREMENT для таблицы `prefix_media`
 --
 ALTER TABLE `prefix_media`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 --
 -- AUTO_INCREMENT для таблицы `prefix_media_target`
 --
 ALTER TABLE `prefix_media_target`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

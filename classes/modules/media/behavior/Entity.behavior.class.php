@@ -79,7 +79,7 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
      * @param $aParams
      */
     public function CallbackValidateAfter($aParams)
-    {        $this->Logger_Notice(print_r($aParams, true));
+    {        
         if ($aParams['bResult'] and $this->getParam('validate_enable')) {
             $aFields = $aParams['aFields'];
             $oValidator = $this->Validate_CreateValidator('media', $this,
@@ -95,23 +95,27 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
      */
     public function CallbackAfterSave()
     {
-        if($this->oObject->getMedia() == null){
+        if($this->oObject->getMedia() === null or !is_array($this->oObject->getMedia())){
             return;
         }
         
+        /*
+         * Удаляем все обрезанные файлы, если это обрезаемый файл, и если он не тот же что предыдущий
+         */
         $aMedia = $this->PluginMedia_Media_GetMedias($this->oObject, $this->getParam('target_type') );
-        if ($this->getParam('crop') and $aMedia) {
+
+        if ($this->getParam('crop') and $aMedia 
+                and !in_array(current($aMedia)->getId(), array_keys($this->oObject->getMedia()))) {
             $this->PluginMedia_Media_RemoveCroppedImages(
                 current($aMedia), 
                 $this->getParam('crop_size_name'),
                 Config::Get('plugin.media.avatar.sizes')
             );
         }
-        
         $this->PluginMedia_Media_SaveMedias(
             $this->getParam('target_type'), 
             $this->oObject->getId(),
-            $this->oObject->getMedia()?$this->oObject->getMedia():[]);
+            $this->oObject->getMedia());
     }
 
     /**
