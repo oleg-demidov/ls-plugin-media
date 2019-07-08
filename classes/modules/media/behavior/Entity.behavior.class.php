@@ -79,7 +79,7 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
      * @param $aParams
      */
     public function CallbackValidateAfter($aParams)
-    { 
+    {        $this->Logger_Notice(print_r($aParams, true));
         if ($aParams['bResult'] and $this->getParam('validate_enable')) {
             $aFields = $aParams['aFields'];
             $oValidator = $this->Validate_CreateValidator('media', $this,
@@ -95,6 +95,10 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
      */
     public function CallbackAfterSave()
     {
+        if($this->oObject->getMedia() == null){
+            return;
+        }
+        
         $aMedia = $this->PluginMedia_Media_GetMedias($this->oObject, $this->getParam('target_type') );
         if ($this->getParam('crop') and $aMedia) {
             $this->PluginMedia_Media_RemoveCroppedImages(

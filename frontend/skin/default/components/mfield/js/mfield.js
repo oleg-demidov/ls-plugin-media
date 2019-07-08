@@ -87,7 +87,7 @@
             }
             
             $media.mediaMedia('setNameInput', this.element.data('fieldName'));
-            console.log(this.element.data('fieldName'), $media);
+//            console.log(this.element.data('fieldName'), $media);
             
             if(this.element.data('crop')){ 
                 this.elements.cropper.mediaCropper('crop', $media,  function(e, data){

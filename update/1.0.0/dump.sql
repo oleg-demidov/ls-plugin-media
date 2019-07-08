@@ -47,7 +47,7 @@ CREATE TABLE `prefix_media_target` (
   `id` int(11) NOT NULL,
   `media_id` bigint(20) UNSIGNED NOT NULL,
   `target_id` bigint(20) UNSIGNED NOT NULL,
-  `targtet_type` varchar(50) COLLATE utf8_bin NOT NULL,
+  `target_type` varchar(50) COLLATE utf8_bin NOT NULL,
   `date_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
