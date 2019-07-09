@@ -23,9 +23,7 @@ class PluginMedia_HookAvatar extends Hook{
         }
         $sPath = current($aMedia)->getObject()->getWebPath('useravatar');
         $sPath = $this->Fs_GetPathServerFromWeb($sPath);
-        
-        $this->Logger_Notice($sPath);
-       
+               
         $mResult = $this->PluginMedia_Media_GenerateImageBySizes(
             $sPath, 
             dirname($this->Fs_GetPathRelativeFromServer($sPath)), 
