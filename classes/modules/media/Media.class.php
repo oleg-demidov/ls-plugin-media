@@ -55,23 +55,7 @@ class PluginMedia_ModuleMedia extends ModuleORM
     }
     
     public function Upload($oMedia) {
-        /*
-         * Копируем во временное место для обработки
-         */      
-        $sDirTmp = Config::Get('path.tmp.server') . '/media/tmp/';
         
-        if (!is_dir($sDirTmp)) {
-            if(!mkdir($sDirTmp, 0777, true)){
-                return $this->Lang_Get('media.error.upload');
-            }
-        }
-        
-        $sFileTmp = $sDirTmp . $oMedia->getName();
-        if (!move_uploaded_file($oMedia->getTmpName(), $sFileTmp)) {
-            return $this->Lang_Get('media.error.upload');
-        }
-        
-        $oMedia->setPath($sFileTmp);
         /**
          * Определяем тип медиа по файлу и запускаем обработку
          */

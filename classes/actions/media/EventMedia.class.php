@@ -105,24 +105,26 @@ class PluginMedia_ActionMedia_EventMedia extends Event {
     
     public function EventUpload()
     {
-        
-        /**
-         * Файл был загружен?
-         */
-        if (!isset($_FILES['file']['tmp_name'])) {
-            $this->Message_AddError( $this->Lang_Get('plugin.media.uploader.notices.error_no_file'));
-            return;
+        if(isPost()){
+            $oPostFile = Engine::GetEntity(PluginMedia_ModuleMedia_EntityUploadPost::class, $_FILES['file']);
+            if(!$oPostFile->_Validate()){
+                $this->Message_AddError($oPostFile->_getValidateError());
+                return;
+            }
+        }elseif(getRequest('file')){
+            
         }
         
         /**
          * Создаем медиа
-         */       
-        $oMedia = Engine::GetEntity('PluginMedia_Media_Media', $_FILES['file']);
-        $oMedia->setUserId($this->oUserCurrent->getId());
+         */ 
+        $oMedia = Engine::GetEntity('PluginMedia_Media_Media', $oPostFile->_getData());
+        $oMedia->setUserId($this->oUserCurrent->getId());       
+        
         /*
          * Проверяем 
          */
-        $oMedia->_setValidateScenario('upload');
+        $oMedia->_setValidateScenario('create');
         if(!$oMedia->_Validate()){
             $this->Message_AddError( $oMedia->_getValidateError());
             return;
@@ -138,7 +140,7 @@ class PluginMedia_ActionMedia_EventMedia extends Event {
             return;
         }
         /*
-         * Загружаем
+         * Сохраняем
          */       
         if ($mResult = $this->PluginMedia_Media_Upload($oMedia) and is_object($mResult)) {
             $oViewer = $this->Viewer_GetLocalViewer();

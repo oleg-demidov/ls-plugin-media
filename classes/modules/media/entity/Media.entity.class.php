@@ -5,10 +5,10 @@ class PluginMedia_ModuleMedia_EntityMedia extends EntityORM
     
 
     protected $aValidateRules = array(
-        [ 'type', 'type', 'on' => ['upload']],
-        [ 'name', 'string', 'min' => 1, 'on' => ['upload']],
-        [ 'size error', 'size', 'on' => ['upload']],
-        [ 'error', 'error', 'on' => ['upload']]
+        [ 'type', 'type', 'on' => ['create']],
+        [ 'name', 'string', 'min' => 1, 'on' => ['create']],
+        [ 'size', 'size', 'on' => ['create']],
+        [ 'path', 'path', 'on' => ['create']]
     );
     
     protected $aJsonFields = array(
@@ -86,19 +86,14 @@ class PluginMedia_ModuleMedia_EntityMedia extends EntityORM
         return true;
     }
     
-    public function ValidateSize($mValue) {
-        if ($this->getError() != UPLOAD_ERR_OK) {
-            switch ($this->getError()) {
-                case UPLOAD_ERR_INI_SIZE:
-                case UPLOAD_ERR_FORM_SIZE:
-                    return $this->Lang_Get(
-                        'plugin.media.uploader.notices.error_too_large', 
-                        array('size' => @func_ini_return_bytes(ini_get('upload_max_filesize')) / 1024)
-                    );
-                default:
-                    return $this->Lang_Get('plugin.media.uploader.notices.error_upload');
-            }
+    public function ValidatePath($sPath) {
+        if(!file_exists($sPath)){
+            return $this->Lang_Get('plugin.media.uploader.notices.error_no_file').'ghgh';
         }
+        return true;
+    }
+    
+    public function ValidateSize($mValue) {
         
         $iMaxSize = $this->PluginMedia_Media_GetConfigParam( 'max_size', $this->getType());
         
@@ -111,14 +106,7 @@ class PluginMedia_ModuleMedia_EntityMedia extends EntityORM
         
         return true;
     }
-    
-    public function ValidateError($sValue) {
-        if ($sValue != UPLOAD_ERR_OK) {
-            return $this->Lang_Get('plugin.media.uploader.notices.error_upload'). ' ' .$sValue;
-        }
-        
-        return true;
-    }
+   
     
     public function getPath($bWithType = false) {
         return $this->Fs_GetPathServer(parent::getPath(), $bWithType );
