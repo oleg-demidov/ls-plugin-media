@@ -7,8 +7,16 @@ class PluginMedia_ModuleMedia_EntityUploadPost extends Entity
     protected $aValidateRules = array(
         [ 'tmp_name', 'tmp_name'],
         [ 'size', 'size'],
+        [ 'type', 'type'],
     );
     
+    public function ValidateType($sType) {
+        if(!$sTypeMedia = $this->PluginMedia_Media_CheckMediaType($sType)){
+            return $this->Lang_Get('plugin.media.uploader.notices.error_no_type', ['type' => $sType]);
+        }
+        
+        $this->setType($sTypeMedia);
+    }
     
     public function ValidateTmpName($sPath) {
         if (!$this->getTmpName()) {

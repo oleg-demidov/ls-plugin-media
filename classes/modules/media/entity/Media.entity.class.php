@@ -5,7 +5,7 @@ class PluginMedia_ModuleMedia_EntityMedia extends EntityORM
     
 
     protected $aValidateRules = array(
-        [ 'type', 'type', 'on' => ['create']],
+        [ 'type', 'string', 'on' => ['create']],
         [ 'name', 'string', 'min' => 1, 'on' => ['create']],
         [ 'size', 'size', 'on' => ['create']],
         [ 'path', 'path', 'on' => ['create']]
@@ -77,15 +77,7 @@ class PluginMedia_ModuleMedia_EntityMedia extends EntityORM
     public function getCountTargets() {
         return sizeof($this->getTargets());
     }
-    
-    public function ValidateType($sType) {
-        if(!$sTypeMedia = $this->PluginMedia_Media_CheckMediaType($sType)){
-            return $this->Lang_Get('plugin.media.uploader.notices.error_no_type', ['type' => $sType]);
-        }
-        $this->setType($sTypeMedia);
-        return true;
-    }
-    
+        
     public function ValidatePath($sPath) {
         if(!file_exists($sPath)){
             return $this->Lang_Get('plugin.media.uploader.notices.error_no_file').'ghgh';
