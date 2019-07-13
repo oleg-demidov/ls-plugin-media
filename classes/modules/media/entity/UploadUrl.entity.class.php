@@ -41,26 +41,9 @@ class PluginMedia_ModuleMedia_EntityUploadUrl extends Entity
     public function ValidateSize($sPath) {
         if(!isset($this->aHeaders['Content-Length'])){
             return $this->Lang_Get('plugin.media.uploader.notices.error_url_headers_length');
-        }
+        }        
         
-        $iMaxSizeKb = $this->PluginMedia_Media_GetConfigParam('max_size', $this->getType());
-        
-        $iMaxSizeMb = func_ini_return_bytes(ini_get('upload_max_filesize'));
-        if($this->aHeaders['Content-Length'] > $iMaxSizeMb){
-            return $this->Lang_Get(
-                'plugin.media.uploader.notices.error_too_large', 
-                array('size' =>$iMaxSizeMb )
-            );
-        }
-        
-        if(($this->aHeaders['Content-Length']/1024) > $iMaxSizeKb ){
-            return $this->Lang_Get(
-                'plugin.media.uploader.notices.error_too_large', 
-                array('size' => $iMaxSizeKb )
-            );
-        }
-        
-        $this->setSize($this->aHeaders['Content-Length']);
+        $this->setSize($this->aHeaders['Content-Length']/1024);
         
         return true;
     }

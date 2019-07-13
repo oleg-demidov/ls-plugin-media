@@ -60,15 +60,6 @@ class PluginMedia_ModuleMedia_EntityUploadPost extends Entity
             }
         }
         
-        $iMaxSize = $this->PluginMedia_Media_GetConfigParam( 'max_size', $this->getType());
-        
-        if($this->getSize() > $iMaxSize * 1024){
-            return $this->Lang_Get(
-                'plugin.media.uploader.notices.error_too_large', 
-                array('size' => $iMaxSize)
-            );
-        }
-        
         return true;
     }
    

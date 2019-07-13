@@ -80,7 +80,7 @@ class PluginMedia_ModuleMedia_EntityMedia extends EntityORM
         
     public function ValidatePath($sPath) {
         if(!file_exists($sPath)){
-            return $this->Lang_Get('plugin.media.uploader.notices.error_no_file').'ghgh';
+            return $this->Lang_Get('plugin.media.uploader.notices.error_no_file');
         }
         return true;
     }

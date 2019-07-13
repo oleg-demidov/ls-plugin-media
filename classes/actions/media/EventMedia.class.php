@@ -112,6 +112,8 @@ class PluginMedia_ActionMedia_EventMedia extends Event {
             $oPostFile = Engine::GetEntity(PluginMedia_ModuleMedia_EntityUploadUrl::class, [
                 'url' => getRequest('url')
             ]);
+        }else{
+            return;
         }
         
         if(!$oPostFile->_Validate()){

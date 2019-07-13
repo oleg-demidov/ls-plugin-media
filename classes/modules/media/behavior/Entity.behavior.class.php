@@ -106,12 +106,14 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
 
         if ($this->getParam('crop') and $aMedia 
                 and !in_array(current($aMedia)->getId(), array_keys($this->oObject->getMediaForSave()))) {
+            
             $this->PluginMedia_Media_RemoveCroppedImages(
                 current($aMedia), 
                 $this->getParam('crop_size_name'),
                 Config::Get('plugin.media.avatar.sizes')
             );
         }
+        
         $this->PluginMedia_Media_SaveMedias(
             $this->getParam('target_type'), 
             $this->oObject->getId(),
@@ -142,6 +144,10 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
     {
         if (!$mValue) {
             $mValue = getRequest($this->getParam('field_name'), []);
+        }
+        
+        if(!is_array($mValue)){
+            $mValue = [$mValue];
         }
         
         $aMedia = $this->PluginMedia_Media_GetMediaItemsByFilter([
