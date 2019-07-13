@@ -95,17 +95,17 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
      */
     public function CallbackAfterSave()
     {
-        if($this->oObject->getMedia() === null or !is_array($this->oObject->getMedia())){
+        if($this->oObject->getMediaForSave() === null or !is_array($this->oObject->getMediaForSave())){
             return;
         }
         
         /*
          * Удаляем все обрезанные файлы, если это обрезаемый файл, и если он не тот же что предыдущий
          */
-        $aMedia = $this->PluginMedia_Media_GetMedias($this->oObject, $this->getParam('target_type') );
+        $aMedia = $this->getMedia();
 
         if ($this->getParam('crop') and $aMedia 
-                and !in_array(current($aMedia)->getId(), array_keys($this->oObject->getMedia()))) {
+                and !in_array(current($aMedia)->getId(), array_keys($this->oObject->getMediaForSave()))) {
             $this->PluginMedia_Media_RemoveCroppedImages(
                 current($aMedia), 
                 $this->getParam('crop_size_name'),
@@ -115,7 +115,7 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
         $this->PluginMedia_Media_SaveMedias(
             $this->getParam('target_type'), 
             $this->oObject->getId(),
-            $this->oObject->getMedia());
+            $this->oObject->getMediaForSave());
     }
 
     /**
@@ -162,7 +162,7 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
         }
         
   
-        $this->oObject->setMedia($aMedia);
+        $this->oObject->setMediaForSave($aMedia);
         
         return true;
     }
@@ -174,9 +174,12 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
      */
     public function getMedia()
     {
-        if($this->oObject->getMedia()){
-            return $this->oObject->getMedia();
+        if(!$this->oObject->getMedia()){
+            $this->oObject->setMedia(
+                $this->PluginMedia_Media_GetMedias($this->oObject, $this->getParam('target_type') )
+            );
         }
-        return $this->PluginMedia_Media_GetMedias($this->oObject, $this->getParam('target_type') );
-    }    
+        
+        return $this->oObject->getMedia();
+    }  
 }

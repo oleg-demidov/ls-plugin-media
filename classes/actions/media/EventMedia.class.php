@@ -105,16 +105,19 @@ class PluginMedia_ActionMedia_EventMedia extends Event {
     
     public function EventUpload()
     {
-        if(isPost()){
+        if(isset($_FILES['file'])){
             $oPostFile = Engine::GetEntity(PluginMedia_ModuleMedia_EntityUploadPost::class, $_FILES['file']);
-            if(!$oPostFile->_Validate()){
-                $this->Message_AddError($oPostFile->_getValidateError());
-                return;
-            }
-        }elseif(getRequest('file')){
             
+        }elseif(getRequest('url')){
+            $oPostFile = Engine::GetEntity(PluginMedia_ModuleMedia_EntityUploadUrl::class, [
+                'url' => getRequest('url')
+            ]);
         }
         
+        if(!$oPostFile->_Validate()){
+            $this->Message_AddError($oPostFile->_getValidateError());
+            return;
+        }
         /**
          * Создаем медиа
          */ 

@@ -16,6 +16,8 @@ class PluginMedia_ModuleMedia_EntityUploadPost extends Entity
         }
         
         $this->setType($sTypeMedia);
+        
+        return true;
     }
     
     public function ValidateTmpName($sPath) {

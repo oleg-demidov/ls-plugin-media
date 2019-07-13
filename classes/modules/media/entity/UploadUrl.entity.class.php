@@ -7,10 +7,10 @@ class PluginMedia_ModuleMedia_EntityUploadUrl extends Entity
 
 
     protected $aValidateRules = array(
-        [ 'path', 'headers'],
-        [ 'path', 'type'],
-        [ 'path', 'size'],
-        [ 'path', 'path']
+        [ 'url', 'headers'],
+        [ 'url', 'type'],
+        [ 'url', 'size'],
+        [ 'url', 'path']
     );
     
     public function ValidateHeaders($sPath) {
@@ -34,6 +34,8 @@ class PluginMedia_ModuleMedia_EntityUploadUrl extends Entity
         }
         
         $this->setType($sTypeMedia);
+        
+        return true;
     }
     
     public function ValidateSize($sPath) {
@@ -59,6 +61,8 @@ class PluginMedia_ModuleMedia_EntityUploadUrl extends Entity
         }
         
         $this->setSize($this->aHeaders['Content-Length']);
+        
+        return true;
     }
     
     public function ValidatePath($sPath) {
@@ -68,21 +72,25 @@ class PluginMedia_ModuleMedia_EntityUploadUrl extends Entity
             return $this->Lang_Get('plugin.media.uploader.notices.error_url_upload');
         }
         
+        $iMaxSizeKb = $this->PluginMedia_Media_GetConfigParam('max_size', $this->getType());
+        
+        $iSizeKb = 0;
         $sContent = '';
         while (!feof($rFile) and $iSizeKb < $iMaxSizeKb) {
             $sContent .= fread($rFile, 1024 * 2);
+            $iSizeKb ++;
         }
         /**
          * Если конец файла не достигнут,
          * значит файл имеет недопустимый размер
          */
-        $iMaxSizeKb = $this->PluginMedia_Media_GetConfigParam('max_size', $this->getType());
         
         if (!feof($rFile)) {
             return $this->Lang_Get('plugin.media.uploader.notices.error_too_large', array('size' => $iMaxSizeKb));
         }
+        
         fclose($rFile);
-        $this->setPath($sFileTmp);
+       
         
         /**
          * Копируем загруженный файл
@@ -91,10 +99,12 @@ class PluginMedia_ModuleMedia_EntityUploadUrl extends Entity
         if (!is_dir($sDirTmp)) {
             @mkdir($sDirTmp, 0777, true);
         }
-        $sFileTmp = $sDirTmp . func_generator() . '.' . $sExtension;
+        $sFileTmp = $sDirTmp . func_generator() . '.' . $this->getType();
         $rFile = fopen($sFileTmp, 'w');
         fwrite($rFile, $sContent);
         fclose($rFile);
+        
+        $this->setPath($sFileTmp);
         
         return true;
     }
