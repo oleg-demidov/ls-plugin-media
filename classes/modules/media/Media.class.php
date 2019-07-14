@@ -620,7 +620,7 @@ class PluginMedia_ModuleMedia extends ModuleORM
             $aSizesData[] = ['w' => $iCanvasWidth, 'h' => null, 'crop' => true];
         }
         
-        $oMedia->setDataOne('sizes', $aSizesData);
+        $oMedia->setDataOne('image_sizes', $aSizesData);
         $oMedia->Save();
         
         return true;
@@ -635,6 +635,60 @@ class PluginMedia_ModuleMedia extends ModuleORM
             'field_label' => 'plugin.media.avatar.field_label',
             'crop_size_name' => 'useravatar'
         ]);
+    }
+    
+    public function AddByUrl($oUser, $oBehavior, $sUrl) {
+        
+        $oUploadUrl = Engine::GetEntity(PluginMedia_ModuleMedia_EntityUploadUrl::class, [
+            'url' => $sUrl
+        ]);
+
+        if(!$oUploadUrl->_Validate()){
+            return false;
+        }
+        
+        $oMedia = Engine::GetEntity('PluginMedia_Media_Media', $oUploadUrl->_getData());
+        $oMedia->setUserId($oUser->getId());
+
+        if(!$oMedia->_Validate()){
+            return false;
+        }
+        
+        $oMedia = $this->Upload($oMedia);
+        
+        
+        if(!$oImage = $this->Image_Open($oMedia->getPath() )){
+            return false;
+        }
+        
+        $oImage->cropProportion($oBehavior->getParam('crop_aspect_ratio'));
+        
+        /**
+         * Сохраняем
+         */
+        if (false === ($sFileResult = $oImage->save(
+                $this->GetImagePathBySize($oMedia->getPath(), $oBehavior->getParam('crop_size_name'))))) {
+            return false;
+        }
+        
+        $oImage->resize(null, 100);
+        
+        if (false === ($sFileResult = $oImage->save(
+                $this->GetImagePathBySize($oMedia->getPath(), $oBehavior->getParam('crop_size_name').'_preview')))) {
+            return false;
+        }
+        
+        $mResult = $this->GenerateImageBySizes(
+            $this->GetImagePathBySize($oMedia->getPath(), $oBehavior->getParam('crop_size_name')), 
+            dirname($this->Fs_GetPathRelativeFromServer($oMedia->getPath())), 
+            basename(preg_replace('/\\.[^.\\s]{3,4}$/', '', $oMedia->getPath())).'_'.$oBehavior->getParam('crop_size_name'), 
+            Config::Get('plugin.media.avatar.sizes')
+        );
+
+        $oUser->_setData([$oBehavior->getParam('field_name') => $oMedia->getId()]);      
+        $oUser->_Validate([$oBehavior->getParam('field_name')]);
+        $oUser->Save();
+        
     }
     
     public function RemoveCroppedImages($oMedia, $sCropSizeName, $aSizes = []) {

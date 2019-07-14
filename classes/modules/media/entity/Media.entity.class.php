@@ -113,4 +113,12 @@ class PluginMedia_ModuleMedia_EntityMedia extends EntityORM
         $date = new DateTime($this->getDateCreate());
         return $date->format($format);
     }
+    
+    public function addSize($aSize) {
+        $aSizesData = $this->getDataOne('image_sizes');
+        
+        $aSizesData[] = $aSize;
+        
+        $this->setDataOne('image_sizes', $aSizesData);
+    }
 }

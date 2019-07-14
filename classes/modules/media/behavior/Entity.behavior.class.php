@@ -142,6 +142,7 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
      */
     public function ValidateMedia($mValue)
     {
+
         if (!$mValue) {
             $mValue = getRequest($this->getParam('field_name'), []);
         }
@@ -188,4 +189,8 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
         
         return $this->oObject->getMedia();
     }  
+    
+    public function setByUrl($sUrl) {
+        $this->PluginMedia_Media_AddByUrl($this->oObject, $this, $sUrl);
+    }
 }
