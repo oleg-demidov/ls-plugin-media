@@ -13,7 +13,7 @@ $config['components'] = [
 
 $config['admin']['assets'] = [
     'js' => [
-        'assets/js/init.js'
+//        'assets/js/init.js'
     ],
     'css' => [
         //'assets/css/admin.css'
