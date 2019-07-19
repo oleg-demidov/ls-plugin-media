@@ -18,6 +18,7 @@
         options: {
             // Ссылки
             urls: {
+                upload:null
                 // Загрузка файла
             },
 
@@ -28,7 +29,9 @@
                 // Инпут
                 upload_input: '[data-file-input]',
                 
-                fileTpl: "[data-file-tpl]"
+                fileTpl: "[data-file-tpl]",
+                
+                btnUploadUrl:"@[data-btn-upload-url]"
             },
 
             // Настройки загрузчика
@@ -56,6 +59,10 @@
          */
         _create: function () {
             this._super();
+            
+            this.option('urls.upload', this.element.data('url'));
+            
+            this._on(this.elements.btnUploadUrl, {click: "onUploadByUrl"});
             
             $.extend( this.option( 'fileupload' ), {
                 fieldName:  this.elements.upload_input.attr('name'),
@@ -90,6 +97,16 @@
             
             this.elements.upload_zone.dmUploader( this.option( 'fileupload' ) );
            
+        },
+        
+        onUploadByUrl: function(){
+            let url = prompt('Url');
+            
+            let id = Math.random();
+            
+            this.onNewFile(id, {name:url}); 
+             
+            this._load('upload', {url:url}, this.onUploadSuccess.bind(this, id));
         },
 
         /**

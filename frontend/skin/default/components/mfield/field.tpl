@@ -30,6 +30,7 @@
 
     <input class="d-none form-control" data-media-count-field name="{$oBehavior->getParam('field_name')}_count" 
         {cattr list=$validateRules} value="{$aMedias|@sizeof}">
+    <input type="hidden" name="{$oBehavior->getParam('field_name')}[]" value="0">
     
     {capture name="content"}
         

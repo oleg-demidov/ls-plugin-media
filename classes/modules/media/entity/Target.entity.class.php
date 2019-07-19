@@ -38,7 +38,7 @@ class PluginMedia_ModuleMedia_EntityTarget extends EntityORM
     {
         if ($bResult = parent::beforeSave()) {
             if ($this->_isNew()) {
-                $this->setDateAdd(date("Y-m-d H:i:s"));
+                $this->setDateCreate(date("Y-m-d H:i:s"));
             }
         }
         return $bResult;

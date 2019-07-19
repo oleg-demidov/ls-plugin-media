@@ -6,6 +6,7 @@
     },
     "templates": {
         "uploader":"uploader.tpl",
+        "url":"uploader-url.tpl",
         "file": "file.tpl"
     },
     "scripts": {

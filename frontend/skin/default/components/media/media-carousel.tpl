@@ -6,8 +6,8 @@
     {$items = []}
     {foreach $aMedia as $oMedia}
         {$items[] = [
-            href    => $oMedia->getFileWebPath(),
-            src     => $oMedia->getFileWebPath($previewSize)
+            href    => $oMedia->getObject()->getWebPath(),
+            src     => $oMedia->getObject()->getWebPath($previewSize)
         ]}
     {/foreach}
 

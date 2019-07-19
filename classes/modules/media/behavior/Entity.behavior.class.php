@@ -79,7 +79,7 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
      * @param $aParams
      */
     public function CallbackValidateAfter($aParams)
-    { 
+    {        
         if ($aParams['bResult'] and $this->getParam('validate_enable')) {
             $aFields = $aParams['aFields'];
             $oValidator = $this->Validate_CreateValidator('media', $this,
@@ -95,8 +95,18 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
      */
     public function CallbackAfterSave()
     {
-        $aMedia = $this->PluginMedia_Media_GetMedias($this->oObject, $this->getParam('target_type') );
-        if ($this->getParam('crop') and $aMedia) {
+        if($this->oObject->getMediaForSave() === null or !is_array($this->oObject->getMediaForSave())){
+            return;
+        }
+        
+        /*
+         * Удаляем все обрезанные файлы, если это обрезаемый файл, и если он не тот же что предыдущий
+         */
+        $aMedia = $this->getMedia();
+
+        if ($this->getParam('crop') and $aMedia 
+                and !in_array(current($aMedia)->getId(), array_keys($this->oObject->getMediaForSave()))) {
+            
             $this->PluginMedia_Media_RemoveCroppedImages(
                 current($aMedia), 
                 $this->getParam('crop_size_name'),
@@ -107,7 +117,7 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
         $this->PluginMedia_Media_SaveMedias(
             $this->getParam('target_type'), 
             $this->oObject->getId(),
-            $this->oObject->getMedia()?$this->oObject->getMedia():[]);
+            $this->oObject->getMediaForSave());
     }
 
     /**
@@ -132,8 +142,13 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
      */
     public function ValidateMedia($mValue)
     {
+
         if (!$mValue) {
             $mValue = getRequest($this->getParam('field_name'), []);
+        }
+        
+        if(!is_array($mValue)){
+            $mValue = [$mValue];
         }
         
         $aMedia = $this->PluginMedia_Media_GetMediaItemsByFilter([
@@ -154,7 +169,7 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
         }
         
   
-        $this->oObject->setMedia($aMedia);
+        $this->oObject->setMediaForSave($aMedia);
         
         return true;
     }
@@ -166,9 +181,16 @@ class PluginMedia_ModuleMedia_BehaviorEntity extends Behavior
      */
     public function getMedia()
     {
-        if($this->oObject->getMedia()){
-            return $this->oObject->getMedia();
+        if(!$this->oObject->getMedia()){
+            $this->oObject->setMedia(
+                $this->PluginMedia_Media_GetMedias($this->oObject, $this->getParam('target_type') )
+            );
         }
-        return $this->PluginMedia_Media_GetMedias($this->oObject, $this->getParam('target_type') );
-    }    
+        
+        return $this->oObject->getMedia();
+    }  
+    
+    public function setByUrl($sUrl) {
+        $this->PluginMedia_Media_AddByUrl($this->oObject, $this, $sUrl);
+    }
 }

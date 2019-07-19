@@ -74,6 +74,10 @@ return [
         'label' => "Загрузить",
         'max_size' => 'Максимальный размер %%max_size%%Kb',
         'notices' => [
+            'error_url_dont_work' => 'Нет ответа. Возможно ссылка не рабочая',
+            'error_url_headers_type' => 'Нет заголовка Content-Type',
+            'error_url_headers_length' => 'Нет заголовка Content-Length',
+            'error_url_upload' => 'Не возможно загрузить файл',
             'error_too_large' => 'Превышен максимальный размер загружаемого файла %%size%%',
             'error_no_file' => 'Файл не загружен',
             'error_no_type' => 'Тип файла %%type%% запрещен',

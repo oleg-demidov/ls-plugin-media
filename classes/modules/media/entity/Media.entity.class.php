@@ -5,10 +5,10 @@ class PluginMedia_ModuleMedia_EntityMedia extends EntityORM
     
 
     protected $aValidateRules = array(
-        [ 'type', 'type', 'on' => ['upload']],
-        [ 'name', 'string', 'min' => 1, 'on' => ['upload']],
-        [ 'size error', 'size', 'on' => ['upload']],
-        [ 'error', 'error', 'on' => ['upload']]
+        [ 'type', 'string', 'on' => ['create']],
+        [ 'name', 'string', 'min' => 1, 'on' => ['create']],
+        [ 'size', 'size', 'on' => ['create']],
+        [ 'path', 'path', 'on' => ['create']]
     );
     
     protected $aJsonFields = array(
@@ -24,7 +24,7 @@ class PluginMedia_ModuleMedia_EntityMedia extends EntityORM
     {
         if ($bResult = parent::beforeSave()) {
             if ($this->_isNew()) {
-                $this->setDateAdd(date("Y-m-d H:i:s"));
+                $this->setDateCreate(date("Y-m-d H:i:s"));
             }
         }
         return $bResult;
@@ -77,28 +77,15 @@ class PluginMedia_ModuleMedia_EntityMedia extends EntityORM
     public function getCountTargets() {
         return sizeof($this->getTargets());
     }
-    
-    public function ValidateType($sType) {
-        if(!$sTypeMedia = $this->PluginMedia_Media_CheckMediaType($sType)){
-            return $this->Lang_Get('plugin.media.uploader.notices.error_no_type', ['type' => $sType]);
+        
+    public function ValidatePath($sPath) {
+        if(!file_exists($sPath)){
+            return $this->Lang_Get('plugin.media.uploader.notices.error_no_file');
         }
-        $this->setType($sTypeMedia);
         return true;
     }
     
     public function ValidateSize($mValue) {
-        if ($this->getError() != UPLOAD_ERR_OK) {
-            switch ($this->getError()) {
-                case UPLOAD_ERR_INI_SIZE:
-                case UPLOAD_ERR_FORM_SIZE:
-                    return $this->Lang_Get(
-                        'plugin.media.uploader.notices.error_too_large', 
-                        array('size' => @func_ini_return_bytes(ini_get('upload_max_filesize')) / 1024)
-                    );
-                default:
-                    return $this->Lang_Get('plugin.media.uploader.notices.error_upload');
-            }
-        }
         
         $iMaxSize = $this->PluginMedia_Media_GetConfigParam( 'max_size', $this->getType());
         
@@ -111,14 +98,7 @@ class PluginMedia_ModuleMedia_EntityMedia extends EntityORM
         
         return true;
     }
-    
-    public function ValidateError($sValue) {
-        if ($sValue != UPLOAD_ERR_OK) {
-            return $this->Lang_Get('plugin.media.uploader.notices.error_upload'). ' ' .$sValue;
-        }
-        
-        return true;
-    }
+   
     
     public function getPath($bWithType = false) {
         return $this->Fs_GetPathServer(parent::getPath(), $bWithType );
@@ -132,5 +112,13 @@ class PluginMedia_ModuleMedia_EntityMedia extends EntityORM
     public function getDateCreateFormat($format = 'd.m.y') {
         $date = new DateTime($this->getDateCreate());
         return $date->format($format);
+    }
+    
+    public function addSize($aSize) {
+        $aSizesData = $this->getDataOne('image_sizes');
+        
+        $aSizesData[] = $aSize;
+        
+        $this->setDataOne('image_sizes', $aSizesData);
     }
 }

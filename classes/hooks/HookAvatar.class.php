@@ -23,7 +23,7 @@ class PluginMedia_HookAvatar extends Hook{
         }
         $sPath = current($aMedia)->getObject()->getWebPath('useravatar');
         $sPath = $this->Fs_GetPathServerFromWeb($sPath);
-       
+               
         $mResult = $this->PluginMedia_Media_GenerateImageBySizes(
             $sPath, 
             dirname($this->Fs_GetPathRelativeFromServer($sPath)), 
@@ -32,9 +32,7 @@ class PluginMedia_HookAvatar extends Hook{
         );
     }
 
-    /**
-     * Добавляем в главное меню админки свой раздел с подпунктами
-     */
+    
     public function AddCropModal()
     { 
         if(!$oUser = $this->User_GetUserCurrent()){   
