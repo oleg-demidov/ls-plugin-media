@@ -10,7 +10,8 @@
         "modal-insert": "modal-insert.tpl",
         "form-insert-image": "forms/form-image.tpl",
         "template-image": "templates/image.tpl",
-        "image": "types/media-image.tpl"
+        "image": "types/media-image.tpl",
+        "carousel": "media-carousel.tpl"
     },
     "scripts": {
         "media": "js/media.js",
