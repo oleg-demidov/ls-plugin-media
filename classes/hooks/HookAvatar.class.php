@@ -39,7 +39,12 @@ class PluginMedia_HookAvatar extends Hook{
             return;
         }
         
-        if(Router::GetActionEventName() != "settings"){
+        $aAllowEvents = [
+            "settings",
+            "moderation"
+        ];
+        
+        if(!in_array(Router::GetActionEventName(), $aAllowEvents) ){
             return;
         }
         
