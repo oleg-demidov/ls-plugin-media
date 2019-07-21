@@ -12,7 +12,8 @@
     {/foreach}
 
     {component 'bs-carousel' 
-        classes="{$classes}" 
+        classes = $classes 
+        attributes = $attributes
         indicators=true
         controls=true  
         items=$items}
