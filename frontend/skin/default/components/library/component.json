@@ -1,14 +1,14 @@
 {
     "name": "library",
     "version": "1.0.0",
-    "dependencies": {
-        "media:uploader":"*",
-        "media:media":"*",
-        "media:mfield":"*",
-        "bs-button":"*",
-        "media:crop":"*",
-        "media:tinymce-plugin":"*"
-    },
+    "dependencies": [
+        "media:uploader",
+        "media:media",
+        "media:mfield",
+        "bs-button",
+        "media:crop",
+        "media:tinymce-plugin"
+    ],
     "templates": {
         "library": "library.tpl",
         "modal": "modal.tpl"

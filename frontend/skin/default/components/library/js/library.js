@@ -69,6 +69,8 @@
         _create: function () {
             this._super();
             
+            this.elements.loadBtn.bsButton();
+            
             this.elements.uploader.mediaUploader({
                 onUploadSuccess: function(event, data){
                     let medias = $(data.response.html);
