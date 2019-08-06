@@ -18,15 +18,23 @@ class PluginMedia_ModuleMedia_EntityUploadUrl extends Entity
         if(!isset($this->aHeaders[0])){
             return $this->Lang_Get('plugin.media.uploader.notices.error_url_dont_work');
         }
-        if(!preg_match('/200\sOK/i', $this->aHeaders[0])){
-            return $this->Lang_Get('plugin.media.uploader.notices.error_url_dont_work').' '.$this->aHeaders[0];
-        }
+        
+        
+        $this->Logger_Notice(print_r($this->aHeaders, true));
+        
+//        if(!preg_match('/200\sOK/i', $this->aHeaders[0])){
+//            return $this->Lang_Get('plugin.media.uploader.notices.error_url_dont_work').' '.$this->aHeaders[0];
+//        }
         return true;
     }
     
     public function ValidateType($sPath) {
         if(!isset($this->aHeaders['Content-Type'])){
             return $this->Lang_Get('plugin.media.uploader.notices.error_url_headers_type');
+        }
+        
+        if(is_array($this->aHeaders['Content-Type'])){
+            $this->aHeaders['Content-Type'] = current($this->aHeaders['Content-Type']);
         }
         
         if(!$sTypeMedia = $this->PluginMedia_Media_CheckMediaType($this->aHeaders['Content-Type'])){
@@ -42,6 +50,10 @@ class PluginMedia_ModuleMedia_EntityUploadUrl extends Entity
         if(!isset($this->aHeaders['Content-Length'])){
             return $this->Lang_Get('plugin.media.uploader.notices.error_url_headers_length');
         }        
+        
+        if(is_array($this->aHeaders['Content-Length'])){
+            $this->aHeaders['Content-Length'] = $this->aHeaders['Content-Length'][1];
+        }
         
         $this->setSize($this->aHeaders['Content-Length']/1024);
         
