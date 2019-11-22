@@ -4,6 +4,7 @@
 {$size = $size|default:"x100"}
 {$img = $oMedia->getObject()->getWebPath($size)}
 {$width = $oMedia->getObject()->getImage($img)->getWidth()}
+{$height = $oMedia->getObject()->getImage($img)->getHeight()}
 
 {$attributes['data-id'] = $oMedia->getId()}
 {$attributes['data-web-path'] = $oMedia->getWebPath()}
@@ -11,7 +12,7 @@
 <div class="m-1 media-item" data-media-item {cattr list=$attributes}>
     <div class="{$classes} d-flex justify-content-between position-relative">
         <div style="height:100px;">
-            <img class="media-preview" height="100" width="{$width}" src="{$img}" alt="{$oMedia->getName()}">
+            <img class="media-preview" height="{$height}" width="{$width}" src="{$img}" alt="{$oMedia->getName()}">
             <input type="hidden" data-input value="{$oMedia->getId()}" name="{$name|default:Config::Get('plugin.media.field_name')}[]">
         </div>
         {if $oMedia}
